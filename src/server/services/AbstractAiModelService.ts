@@ -185,9 +185,6 @@ export abstract class AbstractAiModelService {
     } else {
       service = this as unknown as GeminiService;
       userMessages.push(InstructionService.getUserSubmission({ userSubmission }));
-      if (scoringConfig.operator !== 'ScoringType.ModelEval') {
-        userMessages.push(InstructionService.getCorrectAnswer({ prompt, scoringConfig }));
-      }
     }
 
     requestArgs.messages = {
