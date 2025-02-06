@@ -5,28 +5,31 @@ import { DocumentViewer } from '@/lib/components/DocumentViewer';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const [bookText, setBookText] = useState('');
-  const [bookId, setBookId] = useState(1738);
+  const [bookHtml, setBookHtml] = useState(null);
+  const [bookId, setBookId] = useState(1);
 
   useEffect(() => {
     const getBook = async () => {
       const { data } = await apiClient.get(`/test`, { params: { bookId } });
 
-      console.log(data.meta);
-      console.log(data.text.slice(0, 1000));
+      // console.log(data.meta);
+      console.log(data.html);
 
-      setBookText(data.text);
+      setBookHtml(data.html);
     };
 
     getBook();
   }, [bookId]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <button onClick={() => setBookId((prev) => prev + 1)} className={`rounded-sm border border-black p-2`}>
+    <div className="flex min-h-screen w-full flex-col items-center justify-between p-8">
+      <button
+        onClick={() => setBookId((prev) => prev + 1)}
+        className={`rounded-sm border border-black px-3 py-1.5 leading-snug`}
+      >
         Next book
       </button>
-      {typeof bookText === 'string' ? <DocumentViewer text={bookText} /> : null}
-    </main>
+      <div className={`w-[70%]`}>{bookHtml ? <DocumentViewer html={bookHtml} /> : null}</div>
+    </div>
   );
 }

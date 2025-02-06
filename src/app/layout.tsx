@@ -4,8 +4,8 @@ import './globals.css';
 import React from 'react';
 
 export const metadata: Metadata = {
-  title: 'Next.js Template',
-  description: 'Next.js Template by Oliver Terrell',
+  title: 'Project Gutenberg Explorer',
+  description: 'User-friendly website to explore Project Gutenberg',
 };
 
 export default function RootLayout({
@@ -15,8 +15,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={'font-abel'}>
-        <div className={`inset-0 flex h-full min-h-screen flex-col items-center text-sm leading-relaxed`}>
+      <body className={'w-full font-abel'}>
+        <div className={`inset-0 flex h-full min-h-screen w-full flex-col items-center text-sm leading-relaxed`}>
           <AppProvider>{children}</AppProvider>
         </div>
       </body>

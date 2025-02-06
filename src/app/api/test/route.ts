@@ -8,9 +8,13 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const metadataResponse = await axios.get(`https://gutendex.com/books?ids=${bookId}`);
 
-    const textResponse = await axios.get(`https://www.gutenberg.org/cache/epub/${bookId}/pg${bookId}.txt`);
+    const formats = metadataResponse.data.results[0].formats;
+    const htmlUrl = formats['text/html; charset=utf-8'] || formats['text/html'];
+
+    const htmlResponse = await axios.get(htmlUrl);
+
     return NextResponse.json(
-      { text: textResponse.data, meta: metadataResponse.data.results[0] },
+      { html: htmlResponse.data, meta: metadataResponse.data.results[0] },
       { status: 200 }
     );
   } catch (error) {
