@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [bookHtml, setBookHtml] = useState(null);
-  const [bookId, setBookId] = useState(1);
+  const [bookId, setBookId] = useState(1738);
 
   useEffect(() => {
     const getBook = async () => {
