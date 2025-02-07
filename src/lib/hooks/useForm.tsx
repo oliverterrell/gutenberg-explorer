@@ -127,9 +127,11 @@ export function useForm<TForm>(options: UseFormOptions<TForm>) {
   };
 
   const handleSubmit = async () => {
+    console.log('click');
     let newErrors = await validate(form, validations);
 
     if (Object.keys(newErrors).length > 0) {
+      console.log(newErrors);
       setErrors({ ...newErrors });
       return;
     } else if (options.onSubmit) {

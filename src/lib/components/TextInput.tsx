@@ -46,9 +46,9 @@ export const TextInput = ({
 
   const EyeIcon = showPassword ? EyeFill : EyeSlashFill;
 
-  const validationStyles = `border-2 ${invalid ? 'border-red-500 placeholder-red-500 bg-red-100' : 'border-primary'}`;
+  const validationStyles = `${invalid ? 'border-red-500 placeholder-red-500 bg-red-100' : 'border-primary'}`;
   const textSizeStyle = textSize || 'text-xs';
-  const inputStyles = `rounded-xl p-3.5 w-full ${textSizeStyle} font-light text-black data-[focus]:outline-none data-[focus]:border-accent ${className} ${validationStyles}`;
+  const inputStyles = `rounded-xl p-3.5 w-full ${textSizeStyle} font-light text-black data-[focus]:outline-none data-[focus]:border-accent ${className} ${validationStyles} border border-stone-300`;
 
   let inputElement: any;
 
@@ -118,7 +118,7 @@ export const TextInput = ({
   return (
     <motion.div layout className={`flex w-full flex-col gap-y-0.5 ${containerClassName}`}>
       {label ? (
-        <label htmlFor={name} className={`text-accent pb-1 pl-1 ${labelClassName}`}>
+        <label htmlFor={name} className={`pb-1 pl-1 text-accent ${labelClassName}`}>
           {label}
         </label>
       ) : null}

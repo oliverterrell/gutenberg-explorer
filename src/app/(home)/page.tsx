@@ -13,7 +13,7 @@ export default function Home() {
       const { data } = await apiClient.get(`/test`, { params: { bookId } });
 
       // console.log(data.meta);
-      console.log(data.html);
+      // console.log(data.html);
 
       setBookHtml(data.html);
     };

@@ -16,7 +16,6 @@ export function useAuthForm(onSubmit: OnSubmitForm, isRegistration: boolean) {
     firstName: '',
     lastName: '',
     email: '',
-    phone: '',
     password: '',
   };
 
@@ -28,7 +27,6 @@ export function useAuthForm(onSubmit: OnSubmitForm, isRegistration: boolean) {
       lastName: { isValid: () => !isRegistration || $.form.lastName.length > 0 },
       email: { isValid: () => $.form.email.length > 0 },
       password: { isValid: () => $.form.password.length > 0 },
-      phone: { isValid: () => !isRegistration || ($.form.phone.length > 0 && $.form.phone.length <= 16) },
     },
   });
 

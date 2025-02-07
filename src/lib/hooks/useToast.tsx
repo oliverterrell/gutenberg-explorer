@@ -9,7 +9,7 @@ import { CheckCircleFill, ExclamationCircleFill, InfoCircleFill } from 'react-bo
 
 export type ToastType = 'success' | 'info' | 'error' | 'maintenance';
 
-export interface ToastMessage {
+export interface Toast {
   type: ToastType;
   message: ReactNode;
   onExit?: VoidFunction;
@@ -19,9 +19,9 @@ export const useToast = () => {
   let presenceTimeout: NodeJS.Timeout;
   const pathname = usePathname();
   const controls = useDragControls();
-  const [toast, setToastRaw] = useState<ToastMessage | null>(null);
+  const [toast, setToastRaw] = useState<Toast | null>(null);
 
-  const setToast = (message: ToastMessage, localStorageKey?: string) => {
+  const setToast = (message: Toast, localStorageKey?: string) => {
     if (typeof window !== 'undefined') {
       if (localStorageKey) {
         window.localStorage.setItem(localStorageKey, JSON.stringify(message));

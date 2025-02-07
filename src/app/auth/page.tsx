@@ -4,6 +4,7 @@ import { Button, ButtonType } from '@/lib/components/Button';
 import { apiClient } from '@/lib/clients/apiClient';
 import { LS_APP_PAGE_TOAST } from '@/lib/constants';
 import { useAuthForm } from '@/lib/hooks/useAuthForm';
+import { Toast } from '@/lib/hooks/useToast';
 import { useApp } from '@/lib/providers/AppProvider';
 import { AuthService } from '@/lib/services/AuthService';
 import { TextInput } from '@/lib/components/TextInput';
@@ -61,13 +62,12 @@ export default function Page() {
         });
       } catch (err: any) {
         console.log(err);
-        setToast({
-          type: 'error',
-          message:
-            err?.response?.status === 409
-              ? `Email or phone already in use`
-              : `Server error. Please try again later.`,
-        });
+        const toast: Toast =
+          err?.response?.status === 409
+            ? { type: 'info', message: 'Email in use. Please log in.' }
+            : { type: 'error', message: 'Something went wrong. Please try again later.' };
+
+        setToast(toast);
         setIsLoading(false);
         return;
       }
@@ -86,11 +86,20 @@ export default function Page() {
       key={`auth-page-ui`}
       className={`relative -top-20 flex w-full flex-col items-center justify-center p-3 md:my-auto md:max-h-[62dvh]`}
     >
-      <div className={`flex w-[400px] flex-row justify-end py-3`}>
+      <div
+        className={`font-outline-dark-2 fixed top-12 mx-auto border-2 border-accent bg-white bg-opacity-20 px-8 py-1.5 text-center font-jacquard text-4xl text-accent`}
+      >
+        Project Gutenberg
+        <br />
+        Explorer
+      </div>
+
+      <div className={`flex w-[400px] flex-row justify-end pb-2 will-change-transform`}>
         <Button
           type={ButtonType.LINK}
           onClick={() => setIsRegistration(!isRegistration)}
-          text={isRegistration ? 'Log In' : 'Sign Up'}
+          text={isRegistration ? 'Back to Log In' : 'Sign Up'}
+          className={`text-md will-change-contents`}
         />
       </div>
 
@@ -155,13 +164,15 @@ export default function Page() {
               </LayoutGroup>
             </motion.div>
 
-            <Button
-              onClick={handleSubmit}
-              type={ButtonType.PRIMARY}
-              loading={{ state: isLoading, content: isRegistration ? 'Registering...' : 'Signing In...' }}
-              text={isRegistration ? 'Sign Up' : 'Log In'}
-              className={`will-change-transform ${isRegistration ? `mt-8` : `mt-20`}`}
-            />
+            <div className={`flex flex-col items-center justify-center`}>
+              <Button
+                onClick={handleSubmit}
+                type={ButtonType.PRIMARY}
+                loading={{ state: isLoading, content: isRegistration ? 'Registering...' : 'Signing In...' }}
+                text={isRegistration ? 'Sign Up' : 'Log In'}
+                className={`w-[210px] will-change-transform ${isRegistration ? `mt-12` : `mt-20`}`}
+              />
+            </div>
           </motion.div>
         </div>
       </LayoutGroup>
