@@ -24,6 +24,7 @@ export default function Page() {
     }
 
     const clearMods: VoidFunction = modViewport();
+
     return () => {
       setToast(null);
       clearMods();
@@ -87,7 +88,7 @@ export default function Page() {
       className={`relative -top-20 flex w-full flex-col items-center justify-center p-3 md:my-auto md:max-h-[62dvh]`}
     >
       <div
-        className={`font-outline-dark-2 fixed top-12 mx-auto border-2 border-accent bg-white bg-opacity-20 px-8 py-1.5 text-center font-jacquard text-4xl text-accent`}
+        className={`font-outline-dark fixed top-12 mx-auto rounded-[10px] border-2 border-accent bg-white bg-opacity-20 px-8 py-1.5 text-center font-jersey text-4xl text-accent`}
       >
         Project Gutenberg
         <br />

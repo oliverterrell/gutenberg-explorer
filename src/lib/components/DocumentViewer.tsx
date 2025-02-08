@@ -1,3 +1,4 @@
+import { useBookStore } from '@/lib/stores/BookStore';
 import { useEffect, useState } from 'react';
 
 interface Section {
@@ -28,7 +29,7 @@ const cleanGutenbergHtml = (html: string): Chapter[] => {
   const chapters: Chapter[] = [
     {
       title: mainTitle,
-      content: `By ${author}\n\n${translator}`,
+      content: `${author}\n\n${translator}`,
       sections: [],
     },
   ];

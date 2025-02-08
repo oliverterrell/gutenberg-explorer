@@ -1,35 +1,37 @@
 'use client';
 
-import { apiClient } from '@/lib/clients/apiClient';
 import { DocumentViewer } from '@/lib/components/DocumentViewer';
-import { useEffect, useState } from 'react';
+import { ExplorerMenu } from '@/lib/components/ExplorerMenu';
+import { useBookStore } from '@/lib/stores/BookStore';
+import { useState } from 'react';
+import { PersonCircle } from 'react-bootstrap-icons';
 
 export default function Home() {
-  const [bookHtml, setBookHtml] = useState(null);
-  const [bookId, setBookId] = useState(1738);
+  const { bookHtml } = useBookStore();
 
-  useEffect(() => {
-    const getBook = async () => {
-      const { data } = await apiClient.get(`/test`, { params: { bookId } });
+  const [logoutMenuVisible, setLogoutMenuVisible] = useState(false);
 
-      // console.log(data.meta);
-      // console.log(data.html);
-
-      setBookHtml(data.html);
-    };
-
-    getBook();
-  }, [bookId]);
+  const logout = () => {
+    setLogoutMenuVisible(false);
+  };
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-between p-8">
-      <button
-        onClick={() => setBookId((prev) => prev + 1)}
-        className={`rounded-sm border border-black px-3 py-1.5 leading-snug`}
-      >
-        Next book
-      </button>
-      <div className={`w-[70%]`}>{bookHtml ? <DocumentViewer html={bookHtml} /> : null}</div>
+    <div className="flex min-h-screen w-full flex-col items-center justify-start p-8">
+      <div className={'flex h-14 w-screen flex-row justify-between border-b border-gray-400'}>
+        <ExplorerMenu />
+        <div className={'absolute right-5'}>
+          <PersonCircle
+            className={'translate-y-2 cursor-pointer text-2xl text-gray-800'}
+            onClick={() => setLogoutMenuVisible((prev) => !prev)}
+          />
+        </div>
+      </div>
+
+      {bookHtml ? (
+        <div className={`w-[60%]`}>
+          <DocumentViewer html={bookHtml} />
+        </div>
+      ) : null}
     </div>
   );
 }

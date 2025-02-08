@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={'w-full bg-gray-800 font-abel'}>
+      <body className={'w-full font-abel'}>
         <div className={`inset-0 flex h-full min-h-screen w-full flex-col items-center text-sm leading-relaxed`}>
           <AppProvider>{children}</AppProvider>
         </div>
