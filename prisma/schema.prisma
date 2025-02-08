@@ -25,3 +25,18 @@ model User {
   @@index([phone])
   @@map("user")
 }
+
+model AiModel {
+  id       String @id @default(uuid()) @db.Uuid
+  model    String @unique
+  name     String
+  provider String
+  class    String
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([model])
+  @@map("ai_model")
+}

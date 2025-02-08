@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "seed": "npx tsx prisma/seed.ts",
+    "prebuild": "npm run seed",
     "build": "prisma generate --no-hints && next build",
     "prod": "npm run build && next start",
     "lint": "next lint"
@@ -44,6 +46,7 @@
     "prisma": "^6.3.0",
     "tailwind-extended-shadows": "^0.4.1",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }
