@@ -1,8 +1,11 @@
 'use client';
 
+import { apiClient } from '@/lib/clients/apiClient';
+import { useApp } from '@/lib/providers/AppProvider';
 import { useBookStore } from '@/lib/stores/BookStore';
+import { AiModel } from '@prisma/client';
 import { Fragment, useState } from 'react';
-import { CheckCircleFill, ChevronLeft, Search, Stars } from 'react-bootstrap-icons';
+import { BrightnessLow, CheckCircleFill, ChevronLeft, Search, Stars, X, XLg } from 'react-bootstrap-icons';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const SelectIcon = ({ selected }: { selected: boolean }) => {
@@ -12,26 +15,46 @@ const SelectIcon = ({ selected }: { selected: boolean }) => {
   return <Fragment />;
 };
 
-type AnalysisOption = 'big-5';
-type AIModel = 'gemini' | 'chat-gpt';
-
-const MenuOption = ({ selected, setSelected, value, name }: any) => {
+const MenuOption = ({ selected, setSelected, value, name, isProcessing }: any) => {
   return (
     <div
       onClick={() => setSelected(value)}
       className={`flex w-full cursor-pointer flex-row justify-between p-3 hover:bg-gray-600`}
     >
-      {name} <SelectIcon selected={selected === value} />
+      {name}{' '}
+      {isProcessing ? (
+        <BrightnessLow className={'animate-spin text-lg duration-300'} />
+      ) : (
+        <SelectIcon selected={selected === value} />
+      )}
     </div>
   );
 };
 
 export const ExplorerMenu = () => {
+  const { user, setUser, aiModels, setToast } = useApp();
+
   const { gutenbergId, setGutenbergId, getBook } = useBookStore('gutenbergId', 'setGutenbergId', 'getBook');
 
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<AnalysisOption>('big-5');
-  const [model, setModel] = useState<AIModel>('gemini');
+  const [model, setModel] = useState<AiModel['name']>(user?.preference?.llmChoice ?? 'gemini-1.5-flash');
+  const [modelUpdateProcessing, setModelUpdateProcessing] = useState(false);
+
+  const updateUserLlmChoice = async (llmChoice: string) => {
+    setToast(null);
+    setModel(llmChoice);
+    setModelUpdateProcessing(true);
+    apiClient
+      .patch('/current-user', { user, preference: { llmChoice } })
+      .then((res) => {
+        setUser(res.data.user);
+        setModel(res.data.user.preference?.llmChoice ?? 'gemini-1.5-flash');
+      })
+      .finally(() => {
+        setToast({ type: 'success', message: 'Updated User Preference' });
+        setModelUpdateProcessing(false);
+      });
+  };
 
   return (
     <Fragment>
@@ -55,9 +78,10 @@ export const ExplorerMenu = () => {
                 onClick={() => setOpen(false)}
                 className={`flex cursor-pointer flex-row justify-between gap-x-6 bg-accent bg-opacity-90 px-3 py-4 text-gray-800`}
               >
-                <ChevronLeft className={'cursor-pointer text-xl'} />
+                <ChevronLeft className={'text-xl'} />
                 <div className={`font-bold text-xl leading-tight`}>Explorer Menu</div>
-                <div className={'h-5 w-5'} />
+                <XLg className={'pt-0.5 text-xl'} />
+                {/*<div className={'h-5 w-5'} />*/}
               </div>
 
               {/** Book Finder */}
@@ -92,9 +116,9 @@ export const ExplorerMenu = () => {
                 </div>
                 <MenuOption
                   selected={false}
-                  setSelected={setSelected}
+                  setSelected={() => {}}
                   value={'big-5'}
-                  name={'Big 5 Personality'}
+                  name={'Big 5 Personality Traits'}
                 />
               </div>
 
@@ -103,8 +127,18 @@ export const ExplorerMenu = () => {
                 <div className={`w-[90%] border-b border-gray-200 pb-0.5 pl-3 pt-1.5 text-left font-bold`}>
                   AI Model Choice
                 </div>
-                <MenuOption selected={model} setSelected={setModel} value={'gemini'} name={'Gemini'} />
-                <MenuOption selected={model} setSelected={setModel} value={'chat-gpt'} name={'ChatGPT'} />
+                {aiModels.map((aiModel, i) => {
+                  return (
+                    <MenuOption
+                      isProcessing={aiModel.model === model && modelUpdateProcessing}
+                      key={`ai-model-menu-option-${i}`}
+                      selected={user?.preference?.llmChoice ?? 'gemini-1.5-flash'}
+                      setSelected={updateUserLlmChoice}
+                      value={aiModel.model}
+                      name={aiModel.name}
+                    />
+                  );
+                })}
               </div>
             </div>
           </motion.aside>

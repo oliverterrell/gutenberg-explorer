@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       const headers = new Headers();
       headers.append('Set-Cookie', serializedAuthTokenSessionCookie);
 
-      return Response.json({ message: 'Login successful' }, { status: 200, headers: headers });
+      return Response.json({ message: 'Login successful', user }, { status: 200, headers: headers });
     } else {
       return new Response(JSON.stringify({ error: 'Invalid login credentials' }), { status: 401 });
     }

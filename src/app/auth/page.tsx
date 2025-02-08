@@ -13,7 +13,7 @@ import { LayoutGroup, motion } from 'framer-motion';
 import { useLayoutEffect, useState } from 'react';
 
 export default function Page() {
-  const { setToast } = useApp();
+  const { setToast, setUser } = useApp();
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistration, setIsRegistration] = useState(false);
 
@@ -39,6 +39,7 @@ export default function Page() {
         const token = authCookie ? authCookie.split('=')[1] : null;
         if (token) {
           AuthService.setSessionToken(token);
+          setUser(res.data.user);
           setToast({ message: 'Welcome!', type: 'success' }, LS_APP_PAGE_TOAST);
           window.location.replace('/');
         }

@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
+import { ZPrismaClient } from '@/shared/zPrismaTypes';
 
-let prismaInstance: PrismaClient;
+let prismaInstance: ZPrismaClient | any;
 
 if (process.env.NODE_ENV === 'production') {
   prismaInstance = new PrismaClient();
@@ -11,4 +12,4 @@ if (process.env.NODE_ENV === 'production') {
   prismaInstance = global.prisma;
 }
 
-export const prisma = prismaInstance;
+export const prisma = prismaInstance as ZPrismaClient;
