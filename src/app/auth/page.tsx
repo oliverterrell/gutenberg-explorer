@@ -18,6 +18,7 @@ export default function Page() {
   const [isRegistration, setIsRegistration] = useState(false);
 
   useLayoutEffect(() => {
+    document.body.classList.add('bg-gray-800');
     if (isInValidationMode) {
       setErrors({});
       setIsInValidationMode(false);
@@ -28,6 +29,7 @@ export default function Page() {
     return () => {
       setToast(null);
       clearMods();
+      document.body.classList.remove('bg-gray-800');
     };
   }, [isRegistration]);
 
@@ -101,7 +103,7 @@ export default function Page() {
           type={ButtonType.LINK}
           onClick={() => setIsRegistration(!isRegistration)}
           text={isRegistration ? 'Back to Log In' : 'Sign Up'}
-          className={`text-md will-change-contents`}
+          className={`text-md text-gray-800 will-change-contents`}
         />
       </div>
 

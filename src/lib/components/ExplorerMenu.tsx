@@ -34,9 +34,9 @@ const MenuOption = ({ selected, setSelected, value, name, isProcessing }: any) =
 export const ExplorerMenu = () => {
   const { user, setUser, aiModels, setToast } = useApp();
 
-  const { gutenbergId, setGutenbergId, getBook } = useBookStore('gutenbergId', 'setGutenbergId', 'getBook');
+  const { gutenbergId, setGutenbergId, getBook } = useBookStore('getBook', 'gutenbergId', 'setGutenbergId');
 
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [model, setModel] = useState<AiModel['name']>(user?.preference?.llmChoice ?? 'gemini-1.5-flash');
   const [modelUpdateProcessing, setModelUpdateProcessing] = useState(false);
 
@@ -56,16 +56,24 @@ export const ExplorerMenu = () => {
       });
   };
 
+  const handleGetBook = () => {
+    getBook()
+      .then(() => {
+        setIsOpen(false);
+      })
+      .catch((err: any) => console.log(err));
+  };
+
   return (
     <Fragment>
       <div
         className={`absolute left-5 mt-0 flex cursor-pointer flex-row gap-x-3 text-3xl`}
-        onClick={() => setOpen(true)}
+        onClick={() => setIsOpen(true)}
       >
         <Search /> Explore
       </div>
       <AnimatePresence>
-        {open ? (
+        {isOpen ? (
           <motion.aside
             initial={{ x: -240 }}
             animate={{ x: 0 }}
@@ -75,13 +83,12 @@ export const ExplorerMenu = () => {
           >
             <div className={`flex flex-col`}>
               <div
-                onClick={() => setOpen(false)}
+                onClick={() => setIsOpen(false)}
                 className={`flex cursor-pointer flex-row justify-between gap-x-6 bg-accent bg-opacity-90 px-3 py-4 text-gray-800`}
               >
                 <ChevronLeft className={'text-xl'} />
                 <div className={`font-bold text-xl leading-tight`}>Explorer Menu</div>
                 <XLg className={'pt-0.5 text-xl'} />
-                {/*<div className={'h-5 w-5'} />*/}
               </div>
 
               {/** Book Finder */}
@@ -98,7 +105,7 @@ export const ExplorerMenu = () => {
                     className={'rounded-lg border border-gray-800 pl-1.5 pt-1 text-black'}
                   />
                   <button
-                    onClick={getBook}
+                    onClick={handleGetBook}
                     className={`rounded-lg bg-gray-800 px-3 py-1.5 leading-snug text-accent ${gutenbergId === null ? 'text-gray-200 opacity-30' : '!bg-accent text-gray-800'}`}
                     disabled={typeof gutenbergId !== 'number'}
                   >

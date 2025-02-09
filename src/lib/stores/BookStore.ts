@@ -11,9 +11,9 @@ const createBookStore = (set: any, get: any) => {
       set({ gutenbergId: Number.isNaN(gutenbergId) ? null : gutenbergId });
     },
 
-    bookHtml: null as string,
-    setBookHtml: (bookHtml: string | null) => set({ bookHtml }),
-    bookMeta: null as object,
+    bookText: null as string,
+    setBookText: (bookText: any) => set({ bookText }),
+    bookMeta: null as any,
     setBookMeta: (bookMeta: object) => set({ bookMeta }),
 
     getBook: async () => {
@@ -23,7 +23,8 @@ const createBookStore = (set: any, get: any) => {
 
       const { data } = await apiClient.get(`/gutenberg-book`, { params: { gutenbergId } });
 
-      set({ bookHtml: data.html, bookMeta: data.meta, bookIsLoading: false });
+      console.log(data);
+      set({ bookText: data.text, bookMeta: data.meta, bookIsLoading: false });
     },
   };
 };

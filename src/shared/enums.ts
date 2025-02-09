@@ -1,7 +1,12 @@
-export enum BIG_5_ASPECT {
-  Openness,
-  Conscientiousness,
-  Extraversion,
-  Agreeableness,
-  Neuroticism,
+export enum Big5Aspect {
+  OPENNESS,
+  CONSCIENTIOUSNESS,
+  EXTRAVERSION,
+  AGREEABLENESS,
+  NEUROTICISM,
+}
+
+export enum S3ActionType {
+  eBook,
+  CoverArt,
 }

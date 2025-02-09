@@ -41,3 +41,22 @@ model AiModel {
   @@index([model])
   @@map("ai_model")
 }
+
+model Book {
+  id           String   @id @default(uuid()) @db.Uuid
+  gutenbergId  Int      @unique @map("gutenberg_id")
+  title        String
+  eBookUrl     String?  @map("e_book_url")
+  coverArtUrl  String?  @map("cover_art_url")
+  plainTextUrl String?  @map("plain_text_url")
+  subjects     String[] @default([])
+  authors      String[] @default([])
+  translators  String[] @default([])
+  languages    String[] @default([])
+  bookshelves  String[] @default([])
+  copyright    Boolean?
+  summaries    String[] @default([])
+
+  @@index([gutenbergId])
+  @@map("book")
+}

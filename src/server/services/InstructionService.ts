@@ -1,4 +1,4 @@
-import { BIG_5_ASPECT } from '@/shared';
+import { Big5Aspect } from '@/shared';
 
 export const InstructionService = {
   getChallengeDescription: ({ prompt }) => {
@@ -58,19 +58,19 @@ Include 2-5 examples of the most unique or impressive correct answers in the fee
     };
 
     const traitWordMap = {
-      [BIG_5_ASPECT.Openness]: {
+      [Big5Aspect.Openness]: {
         adjective: `funny`,
       },
-      [BIG_5_ASPECT.Conscientiousness]: {
+      [Big5Aspect.Conscientiousness]: {
         adjective: `logical`,
       },
-      [BIG_5_ASPECT.Extraversion]: {
+      [Big5Aspect.Extraversion]: {
         adjective: `creative`,
       },
-      [BIG_5_ASPECT.Agreeableness]: {
+      [Big5Aspect.Agreeableness]: {
         adjective: 'precise',
       },
-      [BIG_5_ASPECT.Neuroticism]: {
+      [Big5Aspect.Neuroticism]: {
         adjective: 'unique',
       },
     };
