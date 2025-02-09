@@ -13,6 +13,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     const existingBook = await prisma.book.findUnique({ where: { gutenbergId } });
 
     if (existingBook) {
+      await prisma.book.update({ where: { gutenbergId }, data: { timesRequested: { increment: 1 } } });
       return Response.json({ book: existingBook }, { status: 200 });
     }
 

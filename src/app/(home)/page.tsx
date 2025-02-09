@@ -4,6 +4,7 @@ import { Button, ButtonType } from '@/lib/components/Button';
 import { EPUBReader } from '@/lib/components/EPUBReader';
 import { ExplorerMenu } from '@/lib/components/ExplorerMenu';
 import { PageLoadSpinner } from '@/lib/components/PageLoadSpinner';
+import { TopLists } from '@/lib/components/TopLists';
 import { LS_LOGIN_PAGE_TOAST } from '@/lib/constants';
 import { useToast } from '@/lib/hooks/useToast';
 import { AuthService } from '@/lib/services/AuthService';
@@ -48,7 +49,7 @@ export default function Home() {
         </div>
       </div>
 
-      {book ? <EPUBReader book={book} /> : null}
+      {book ? <EPUBReader book={book} /> : <TopLists />}
     </div>
   );
 }
