@@ -49,8 +49,6 @@ export const useToast = () => {
 
         if (pathname === '/auth') {
           lsKey = LS_LOGIN_PAGE_TOAST;
-        } else if (pathname.startsWith(`/app`)) {
-          lsKey = LS_APP_PAGE_TOAST;
         }
 
         if (window.localStorage.getItem(lsKey)) {
