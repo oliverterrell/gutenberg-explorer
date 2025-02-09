@@ -11,14 +11,15 @@ export const BookService = {
     }
 
     let ContentType: string;
+    let Key = `${id}.${actionType}`;
 
-    if (actionType === S3ActionType.eBook) {
+    if (actionType === S3ActionType.E_BOOK) {
       ContentType = 'application/epub+zip';
-    } else if (actionType === S3ActionType.CoverArt) {
+    } else if (actionType === S3ActionType.COVER_ART) {
       ContentType = 'image/jpeg';
+    } else if (actionType === S3ActionType.PLAIN_TEXT) {
+      ContentType = 'text/plain';
     }
-
-    const Key = `${id}.${actionType}`;
 
     const data = await response.arrayBuffer();
 
@@ -32,6 +33,6 @@ export const BookService = {
 
     await s3.send(putCommand);
 
-    // return `https://amazonaws.com/${process.env.AWS_S3_BUCKET}/${Key}`;
+    return `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${Key}`;
   },
 };

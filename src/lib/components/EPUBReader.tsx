@@ -1,14 +1,14 @@
+import { Book } from '@prisma/client';
 import { useState } from 'react';
 import { ReactReader } from 'react-reader';
 
-export const EPUBReader = ({ url }) => {
+export const EPUBReader = ({ book }: { book: Book }) => {
   const [location, setLocation] = useState(null);
-
   return (
     <div className="mx-auto h-screen max-w-4xl">
-      <div className="h-[calc(100vh-2rem)]">
+      <div className="h-[700px] w-[600px]">
         <ReactReader
-          url={`https://www.gutenberg.org/ebooks/1738.epub3.images`}
+          url={book.eBookUrl}
           location={location}
           locationChanged={(loc) => setLocation(loc)}
           showToc={true}

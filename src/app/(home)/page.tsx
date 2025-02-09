@@ -1,35 +1,16 @@
 'use client';
 
-import { BookViewer } from '@/lib/components/BookViewer';
 import { EPUBReader } from '@/lib/components/EPUBReader';
 import { ExplorerMenu } from '@/lib/components/ExplorerMenu';
 import { useBookStore } from '@/lib/stores/BookStore';
-import { useLayoutEffect, useState } from 'react';
+import { useState } from 'react';
 import { PersonCircle } from 'react-bootstrap-icons';
 import { PageLoadSpinner } from '@/lib/components/PageLoadSpinner';
-import { useSearchParams } from 'next/navigation';
 
 export default function Home() {
-  const { gutenbergId, bookText, bookMeta, bookIsLoading, setGutenbergId, getBook } = useBookStore(
-    'getBook',
-    'bookText',
-    'gutenbergId',
-    'bookIsLoading',
-    'setGutenbergId',
-    'bookMeta'
-  );
+  const { book, bookIsLoading } = useBookStore('bookIsLoading', 'book');
 
   const [logoutMenuVisible, setLogoutMenuVisible] = useState(false);
-
-  const gutenbergIdParamString = useSearchParams().get('gid');
-  const gutenbergIdParam = gutenbergIdParamString ? parseInt(gutenbergIdParamString) : null;
-
-  useLayoutEffect(() => {
-    if (gutenbergIdParam && !Number.isNaN(gutenbergIdParam)) {
-      setGutenbergId(gutenbergIdParam);
-      getBook();
-    }
-  }, [gutenbergIdParam]);
 
   const logout = () => {
     setLogoutMenuVisible(false);
@@ -48,12 +29,7 @@ export default function Home() {
         </div>
       </div>
 
-      {bookMeta?.formats ? (
-        <div className={`w-[60%]`}>
-          <EPUBReader url={bookMeta.formats['application/epub+zip']} />
-          {/*<BookViewer bookText={bookText} />*/}
-        </div>
-      ) : null}
+      {book ? <EPUBReader book={book} /> : null}
     </div>
   );
 }

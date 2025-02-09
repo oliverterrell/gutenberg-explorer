@@ -1,5 +1,6 @@
 import { apiClient } from '@/lib/clients/apiClient';
 import { zustandFactory } from '@/lib/stores/zustandFactory';
+import { Book } from '@prisma/client';
 
 const createBookStore = (set: any, get: any) => {
   return {
@@ -11,10 +12,8 @@ const createBookStore = (set: any, get: any) => {
       set({ gutenbergId: Number.isNaN(gutenbergId) ? null : gutenbergId });
     },
 
-    bookText: null as string,
-    setBookText: (bookText: any) => set({ bookText }),
-    bookMeta: null as any,
-    setBookMeta: (bookMeta: object) => set({ bookMeta }),
+    book: null as Book,
+    setBook: (bookText: any) => set({ bookText }),
 
     getBook: async () => {
       const { gutenbergId } = get();
@@ -24,7 +23,7 @@ const createBookStore = (set: any, get: any) => {
       const { data } = await apiClient.get(`/gutenberg-book`, { params: { gutenbergId } });
 
       console.log(data);
-      set({ bookText: data.text, bookMeta: data.meta, bookIsLoading: false });
+      set({ book: data.book, bookIsLoading: false });
     },
   };
 };

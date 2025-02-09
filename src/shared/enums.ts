@@ -1,12 +1,13 @@
 export enum Big5Aspect {
-  OPENNESS,
-  CONSCIENTIOUSNESS,
-  EXTRAVERSION,
-  AGREEABLENESS,
-  NEUROTICISM,
+  OPENNESS = 'Openness',
+  CONSCIENTIOUSNESS = 'Conscientiousness',
+  EXTRAVERSION = 'Extraversion',
+  AGREEABLENESS = 'Agreeableness',
+  NEUROTICISM = 'Neuroticism',
 }
 
 export enum S3ActionType {
-  eBook,
-  CoverArt,
+  E_BOOK = 'epub',
+  COVER_ART = 'coverArt',
+  PLAIN_TEXT = 'plainText',
 }

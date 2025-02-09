@@ -58,19 +58,19 @@ Include 2-5 examples of the most unique or impressive correct answers in the fee
     };
 
     const traitWordMap = {
-      [Big5Aspect.Openness]: {
+      [Big5Aspect.OPENNESS]: {
         adjective: `funny`,
       },
-      [Big5Aspect.Conscientiousness]: {
+      [Big5Aspect.CONSCIENTIOUSNESS]: {
         adjective: `logical`,
       },
-      [Big5Aspect.Extraversion]: {
+      [Big5Aspect.EXTRAVERSION]: {
         adjective: `creative`,
       },
-      [Big5Aspect.Agreeableness]: {
+      [Big5Aspect.AGREEABLENESS]: {
         adjective: 'precise',
       },
-      [Big5Aspect.Neuroticism]: {
+      [Big5Aspect.NEUROTICISM]: {
         adjective: 'unique',
       },
     };
