@@ -3,6 +3,7 @@
 import { apiClient } from '@/lib/clients/apiClient';
 import { useApp } from '@/lib/providers/AppProvider';
 import { useBookStore } from '@/lib/stores/BookStore';
+import { usePressEnterFor } from '@/lib/util';
 import { AiModel } from '@prisma/client';
 import { Fragment, useState } from 'react';
 import { BrightnessLow, CheckCircleFill, ChevronLeft, Search, Stars, X, XLg } from 'react-bootstrap-icons';
@@ -64,6 +65,8 @@ export const ExplorerMenu = () => {
       .catch((err: any) => console.log(err));
   };
 
+  usePressEnterFor(handleGetBook, !Number.isNaN(gutenbergId));
+
   return (
     <Fragment>
       <div
@@ -79,7 +82,7 @@ export const ExplorerMenu = () => {
             animate={{ x: 0 }}
             exit={{ x: -240, transition: { ease: 'linear', duration: '0.1' } }}
             transition={{ ease: 'linear', duration: '0.1' }}
-            className={`fixed left-0 top-0 h-screen w-[240px] border-r border-gray-900 bg-gray-700`}
+            className={`fixed left-0 top-0 z-[1000] h-screen w-[240px] border-r border-gray-900 bg-gray-700`}
           >
             <div className={`flex flex-col`}>
               <div
