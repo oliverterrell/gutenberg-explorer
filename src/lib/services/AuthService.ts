@@ -1,3 +1,5 @@
+'use client';
+
 import { LS_JWT_TOKEN } from '@/lib/constants';
 import { deleteSessionCookie } from '@/server/actions';
 

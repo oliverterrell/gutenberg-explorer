@@ -42,7 +42,13 @@ export default function Page() {
         if (token) {
           AuthService.setSessionToken(token);
           setUser(res.data.user);
-          setToast({ message: 'Welcome!', type: 'success' }, LS_APP_PAGE_TOAST);
+          setToast(
+            {
+              message: res.data.user.firstName ? `Welcome, ${res.data.user.firstName}!` : 'Welcome!',
+              type: 'success',
+            },
+            LS_APP_PAGE_TOAST
+          );
           window.location.replace('/');
         }
       });
@@ -90,12 +96,15 @@ export default function Page() {
       key={`auth-page-ui`}
       className={`relative -top-20 flex w-full flex-col items-center justify-center p-3 md:my-auto md:max-h-[62dvh]`}
     >
-      <div
-        className={`font-outline-dark fixed top-12 mx-auto rounded-[10px] border-2 border-accent bg-white bg-opacity-20 px-8 py-1.5 text-center font-jersey text-4xl text-accent`}
-      >
-        Project Gutenberg
-        <br />
-        Explorer
+      <div className={`flex w-[400px] flex-col items-start justify-center text-white`}>
+        <h1 className={`my-3 text-3xl font-semibold`}>Project Gutenberg Explorer</h1>
+        <h3 className={`mb-8 py-4 text-sm font-light`}>
+          Explore <span className={'italic'}>Project Gutenberg</span>—a volunteer-supported digital archive of
+          cultural works, and the world&apos;s oldest digital library.
+          <br />
+          <br />
+          Ready to dive in?&ensp;
+        </h3>
       </div>
 
       <div className={`flex w-[400px] flex-row justify-end pb-2 will-change-transform`}>
@@ -103,7 +112,7 @@ export default function Page() {
           type={ButtonType.LINK}
           onClick={() => setIsRegistration(!isRegistration)}
           text={isRegistration ? 'Back to Log In' : 'Sign Up'}
-          className={`text-md text-gray-800 will-change-contents`}
+          className={`text-md will-change-contents`}
         />
       </div>
 

@@ -1,19 +1,28 @@
 'use client';
 
+import { Button, ButtonType } from '@/lib/components/Button';
 import { EPUBReader } from '@/lib/components/EPUBReader';
 import { ExplorerMenu } from '@/lib/components/ExplorerMenu';
+import { PageLoadSpinner } from '@/lib/components/PageLoadSpinner';
+import { LS_LOGIN_PAGE_TOAST } from '@/lib/constants';
+import { useToast } from '@/lib/hooks/useToast';
+import { AuthService } from '@/lib/services/AuthService';
 import { useBookStore } from '@/lib/stores/BookStore';
 import { useState } from 'react';
 import { PersonCircle } from 'react-bootstrap-icons';
-import { PageLoadSpinner } from '@/lib/components/PageLoadSpinner';
 
 export default function Home() {
+  const { setToast } = useToast();
+
   const { book, bookIsLoading } = useBookStore('bookIsLoading', 'book');
 
   const [logoutMenuVisible, setLogoutMenuVisible] = useState(false);
 
-  const logout = () => {
+  const handleLogout = async () => {
     setLogoutMenuVisible(false);
+    await AuthService.logout();
+    setToast({ type: 'success', message: 'Signed out' }, LS_LOGIN_PAGE_TOAST);
+    window.location.reload();
   };
 
   return (
@@ -26,6 +35,16 @@ export default function Home() {
             className={'translate-y-2 cursor-pointer text-2xl text-gray-800'}
             onClick={() => setLogoutMenuVisible((prev) => !prev)}
           />
+          <div
+            className={`absolute -translate-x-12 translate-y-5 border border-gray-400 bg-white px-4 py-2 drop-shadow-md ${logoutMenuVisible ? '' : 'hidden'}`}
+          >
+            <Button
+              onClick={handleLogout}
+              type={ButtonType.LINK}
+              text={'Logout'}
+              className={`text-xl text-gray-800 underline underline-offset-2`}
+            />
+          </div>
         </div>
       </div>
 
