@@ -9,13 +9,13 @@ import { LS_LOGIN_PAGE_TOAST } from '@/lib/constants';
 import { useToast } from '@/lib/hooks/useToast';
 import { AuthService } from '@/lib/services/AuthService';
 import { useBookStore } from '@/lib/stores/BookStore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PersonCircle } from 'react-bootstrap-icons';
 
 export default function Home() {
   const { setToast } = useToast();
 
-  const { book, bookIsLoading } = useBookStore('bookIsLoading', 'book');
+  const { book, bookIsLoading, getLists } = useBookStore('book', 'getLists', 'bookIsLoading');
 
   const [logoutMenuVisible, setLogoutMenuVisible] = useState(false);
 
@@ -26,11 +26,16 @@ export default function Home() {
     window.location.reload();
   };
 
+  useEffect(() => {
+    getLists();
+  }, []);
+
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-start p-8">
       <PageLoadSpinner isLoading={bookIsLoading} />
       <div className={'flex h-14 w-screen flex-row justify-between border-b border-gray-400'}>
         <ExplorerMenu />
+
         <div className={'absolute right-5'}>
           <PersonCircle
             className={'translate-y-2 cursor-pointer text-2xl text-gray-800'}
@@ -49,7 +54,7 @@ export default function Home() {
         </div>
       </div>
 
-      {book ? <EPUBReader book={book} /> : <TopLists />}
+      {book ? <EPUBReader /> : <TopLists />}
     </div>
   );
 }

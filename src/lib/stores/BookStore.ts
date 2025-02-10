@@ -25,6 +25,18 @@ const createBookStore = (set: any, get: any) => {
       console.log(data);
       set({ book: data.book, bookIsLoading: false });
     },
+
+    mostPopularList: [] as Book[],
+    mostRecentList: [] as Book[],
+
+    getLists: async () => {
+      try {
+        const { data } = await apiClient.get(`/list`);
+        set({ mostPopularList: data.mostPopular, mostRecentList: data.mostRecent });
+      } catch (error) {
+        console.log(error);
+      }
+    },
   };
 };
 
