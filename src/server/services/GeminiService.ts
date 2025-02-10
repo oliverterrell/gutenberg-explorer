@@ -1,10 +1,7 @@
 import { AbstractAiModelService } from '@/server/services/AbstractAiModelService';
-import { GetObjectCommand } from '@aws-sdk/client-s3';
-import axios from 'axios';
 import {
   Part,
   Content,
-  FileDataPart,
   HarmCategory,
   SafetySetting,
   RequestOptions,
@@ -16,16 +13,15 @@ import {
   GenerateContentRequest,
 } from '@google/generative-ai';
 import { AcmeBuildRequest } from '@/server/types';
-import { GoogleAIFileManager, FileMetadataResponse } from '@google/generative-ai/server';
+import { GoogleAIFileManager } from '@google/generative-ai/server';
 import { ACME } from '@/server/services/ACME';
 
 export class GeminiService extends AbstractAiModelService {
   public provider = 'google';
   public model = 'gemini-1.5-flash';
+  protected apiKey = process.env.GOOGLE_API_KEY;
   public fileManager = null as GoogleAIFileManager;
   public withFileClient: GenerativeModel;
-
-  protected fileUploadEndpoint = 'https://generativelanguage.googleapis.com/upload/v1beta/files';
 
   protected clientOptions = {
     generationConfig: {
@@ -51,8 +47,6 @@ export class GeminiService extends AbstractAiModelService {
       },
     ] as SafetySetting[],
   };
-
-  protected apiKey = process.env.GOOGLE_CLOUD_GEMINI_KEY;
 
   declare public run: (request: GenerateContentRequest, requestOptions?: RequestOptions) => Promise<any>;
 
@@ -104,63 +98,14 @@ export class GeminiService extends AbstractAiModelService {
     return new GoogleAIFileManager(this.apiKey);
   }
 
-  async getUploadUrl({ googleFileId, contentType, contentLength }): Promise<string> {
-    const response = await axios.post(
-      `${this.fileUploadEndpoint}?key=${this.apiKey}`,
-      { file: { displayName: googleFileId } },
-      {
-        headers: {
-          'X-Goog-Upload-Protocol': 'resumable',
-          'X-Goog-Upload-Command': 'start',
-          'X-Goog-Upload-Header-Content-Length': contentLength.toString(),
-          'X-Goog-Upload-Header-Content-Type': contentType,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    return response.headers['x-goog-upload-url'];
-  }
-
-  getFileDataPart(file: FileMetadataResponse): FileDataPart {
-    return {
-      fileData: {
-        fileUri: file.uri,
-        mimeType: file.mimeType,
-      },
-    } as FileDataPart;
-  }
-
-  async buildRequest({ method, messages, mediaArgs }: AcmeBuildRequest): Promise<GenerateContentRequest> {
-    const userFileDataParts: Part[] = [];
-
-    if (mediaArgs) {
-      try {
-        if (mediaArgs.googleFile || mediaArgs.google4xVideo) {
-          if (mediaArgs.google4xVideo) {
-            userFileDataParts.push(
-              this.getFileDataPart(mediaArgs.google4xVideo),
-              this.getFileDataPart(mediaArgs.googleAudio)
-            );
-          } else {
-            userFileDataParts.push(this.getFileDataPart(mediaArgs.googleFile));
-          }
-        } else {
-          userFileDataParts.push(this.getFileUploadErrorPart());
-        }
-      } catch (e) {
-        userFileDataParts.push(this.getFileUploadErrorPart());
-      }
-    }
-
+  async buildRequest({ method, messages }: AcmeBuildRequest): Promise<GenerateContentRequest> {
     const modelInstructions = messages.model ?? [];
 
     const modelParts = ACME.getInstructions({
       method,
-      mediaArgs,
     }).concat(modelInstructions.map((text) => ({ text }))) as Part[];
 
-    const userParts = userFileDataParts.concat(messages.user.map((text) => ({ text }))) as Part[];
+    const userParts = messages.user.map((text) => ({ text })) as Part[];
 
     return {
       contents: [

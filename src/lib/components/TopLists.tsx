@@ -1,10 +1,11 @@
 import { useBookStore } from '@/lib/stores/BookStore';
 import { Book } from '@prisma/client';
-import { Fragment } from 'react';
+import { Fragment, useLayoutEffect } from 'react';
 
 export const TopLists = () => {
-  const { mostRecentList, mostPopularList, setGutenbergId, getBook } = useBookStore(
+  const { mostRecentList, mostPopularList, setGutenbergId, getBook, getLists } = useBookStore(
     'getBook',
+    'getLists',
     'mostRecentList',
     'setGutenbergId',
     'mostPopularList'
@@ -14,6 +15,10 @@ export const TopLists = () => {
     setGutenbergId(selectedId);
     getBook();
   };
+
+  useLayoutEffect(() => {
+    getLists();
+  }, []);
 
   if (mostRecentList.length === 0 && mostPopularList.length === 0) return null;
 

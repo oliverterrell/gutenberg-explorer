@@ -1,11 +1,12 @@
 'use client';
 
 import { apiClient } from '@/lib/clients/apiClient';
+import { useAppModal } from '@/lib/components/AppModal';
 import { useApp } from '@/lib/providers/AppProvider';
 import { useBookStore } from '@/lib/stores/BookStore';
 import { usePressEnterFor } from '@/lib/util';
 import { AiModel } from '@prisma/client';
-import { Fragment, useState } from 'react';
+import { Fragment, memo, useState } from 'react';
 import { BrightnessLow, CheckCircleFill, ChevronLeft, Search, Stars, X, XLg } from 'react-bootstrap-icons';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -16,17 +17,17 @@ const SelectIcon = ({ selected }: { selected: boolean }) => {
   return <Fragment />;
 };
 
-const MenuOption = ({ selected, setSelected, value, name, isProcessing }: any) => {
+const MenuOption = ({ selected, onClick, name, isProcessing }: any) => {
   return (
     <div
-      onClick={() => setSelected(value)}
+      onClick={typeof onClick === 'function' ? onClick : undefined}
       className={`flex w-full cursor-pointer flex-row justify-between p-3 hover:bg-gray-600`}
     >
       {name}{' '}
       {isProcessing ? (
         <BrightnessLow className={'animate-spin text-lg duration-300'} />
       ) : (
-        <SelectIcon selected={selected === value} />
+        <SelectIcon selected={selected} />
       )}
     </div>
   );
@@ -35,13 +36,22 @@ const MenuOption = ({ selected, setSelected, value, name, isProcessing }: any) =
 export const ExplorerMenu = () => {
   const { user, setUser, aiModels, setToast } = useApp();
 
-  const { gutenbergId, setGutenbergId, getBook } = useBookStore('getBook', 'gutenbergId', 'setGutenbergId');
+  const { gutenbergId, setGutenbergId, getBook, book } = useBookStore(
+    'getBook',
+    'gutenbergId',
+    'setGutenbergId',
+    'book'
+  );
+  const { updateAppModal } = useAppModal('updateAppModal');
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [explorerMenuVisible, setExplorerMenuVisible] = useState(false);
   const [model, setModel] = useState<AiModel['name']>(user?.preference?.llmChoice ?? 'gemini-1.5-flash');
   const [modelUpdateProcessing, setModelUpdateProcessing] = useState(false);
+  const [alterSeedProcessing, setAlterSeedProcessing] = useState(false);
 
   const updateUserLlmChoice = async (llmChoice: string) => {
+    if (llmChoice === user.preference?.llmChoice) return;
+
     setToast(null);
     setModel(llmChoice);
     setModelUpdateProcessing(true);
@@ -60,9 +70,32 @@ export const ExplorerMenu = () => {
   const handleGetBook = () => {
     getBook()
       .then(() => {
-        setIsOpen(false);
+        setExplorerMenuVisible(false);
       })
       .catch((err: any) => console.log(err));
+  };
+
+  const handleAlterSeed = async () => {
+    if (!book) {
+      setToast({ type: 'info', message: 'Please open a book first!' });
+      return;
+    }
+
+    setAlterSeedProcessing(true);
+
+    const seed =
+      'Hello and welcome to the Project Gutenberg Explorer! I am your host, Mariah Carey. How may I assist you today?';
+
+    const { data } = await apiClient.post('/alter-seed', {
+      seed,
+      llmChoice: user.preference?.llmChoice ?? 'gpt-4o',
+    });
+
+    console.log(data.text);
+
+    updateAppModal({ title: 'Alter Seed', body: data.text });
+    setAlterSeedProcessing(false);
+    return data.text;
   };
 
   usePressEnterFor(handleGetBook, !Number.isNaN(gutenbergId));
@@ -71,12 +104,12 @@ export const ExplorerMenu = () => {
     <Fragment>
       <div
         className={`absolute left-5 mt-0 flex cursor-pointer flex-row gap-x-3 text-3xl`}
-        onClick={() => setIsOpen(true)}
+        onClick={() => setExplorerMenuVisible(true)}
       >
         <Search /> Explore
       </div>
       <AnimatePresence>
-        {isOpen ? (
+        {explorerMenuVisible ? (
           <motion.aside
             initial={{ x: -240 }}
             animate={{ x: 0 }}
@@ -86,7 +119,7 @@ export const ExplorerMenu = () => {
           >
             <div className={`flex flex-col`}>
               <div
-                onClick={() => setIsOpen(false)}
+                onClick={() => setExplorerMenuVisible(false)}
                 className={`flex cursor-pointer flex-row justify-between gap-x-6 bg-accent bg-opacity-90 px-3 py-4 text-gray-800`}
               >
                 <ChevronLeft className={'text-xl'} />
@@ -124,12 +157,8 @@ export const ExplorerMenu = () => {
                 >
                   Run Analysis <Stars className={`translate-y-0.5`} />
                 </div>
-                <MenuOption
-                  selected={false}
-                  setSelected={() => {}}
-                  value={'big-5'}
-                  name={'Big 5 Personality Traits'}
-                />
+                <MenuOption name={'Big 5 Personality Traits'} />
+                <MenuOption name={'Alter Seed'} onClick={handleAlterSeed} isProcessing={alterSeedProcessing} />
               </div>
 
               {/** AI Model Choice */}
@@ -142,9 +171,8 @@ export const ExplorerMenu = () => {
                     <MenuOption
                       isProcessing={aiModel.model === model && modelUpdateProcessing}
                       key={`ai-model-menu-option-${i}`}
-                      selected={user?.preference?.llmChoice ?? 'gemini-1.5-flash'}
-                      setSelected={updateUserLlmChoice}
-                      value={aiModel.model}
+                      selected={(user?.preference?.llmChoice ?? 'gemini-1.5-flash') === aiModel.model}
+                      onClick={() => updateUserLlmChoice(aiModel.model)}
                       name={aiModel.name}
                     />
                   );

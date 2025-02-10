@@ -10,7 +10,7 @@ export class GptService extends AbstractAiModelService {
   protected apiKey = process.env.OPENAI_API_KEY;
 
   declare public run: (
-    body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming,
+    body: ChatCompletionCreateParamsNonStreaming,
     options?: OpenAI.RequestOptions
   ) => Promise<any>;
 
