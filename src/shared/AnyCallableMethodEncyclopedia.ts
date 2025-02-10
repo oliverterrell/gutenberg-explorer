@@ -115,6 +115,100 @@ const getAnyCallableMethodEncyclopedia = (): Record<string, AcmeDefinition> => {
       Your response should be a JSON object of the shape { author: string }.`,
     },
 
+    musicalTheatreAnalysis: {
+      function_tool: {
+        type: 'function',
+        function: {
+          name: 'musicalTheatreAnalysis',
+          description:
+            'Determine what genre of music this book would be if it were a musical theatre production. Also choose 1-5 celebrities to play key roles in the production.',
+          parameters: {
+            type: 'object',
+            properties: {
+              genre: {
+                type: 'string',
+                description: 'What genre this book would be if it were a musical theatre production.',
+              },
+              celebrityRoles: {
+                type: 'array',
+                description: 'An array of famous celebrities matched to their parts in the musical.',
+                items: {
+                  type: 'object',
+                  description: 'A celebrity and their role in the musical version of the book.',
+                  properties: {
+                    celebrity: {
+                      type: 'string',
+                      description: 'The name of a famous celebrity.',
+                    },
+                    role: {
+                      type: 'string',
+                      description: 'The role in the band or musical this celebrity will play.',
+                    },
+                  },
+                },
+              },
+              summary: {
+                type: 'string',
+                description:
+                  'A brief, few sentence summary highlighting specifics of the text that led to the results seen in the associated musical theatre analysis.',
+              },
+            },
+            required: ['celebrityRoles', 'genre', 'summary'],
+          },
+        },
+      },
+      systemInstruction: `You are given a chunk of text. Read through the text and determine what genre of music or musical theatre this book would be.
+      Once the genre is chosen, come up with 1-5 famous celebrities and give them key roles based on the text. Have some fun with this! Goofy answers are appreciated.
+      Also return a brief, few sentence summary describing specifics within or about the text that led to the the chosen genre and celebrity roles.
+      Keep your summary to a couple sentences. You don't need to touch on everything. Be nice, and touch on at least a few of the choices, or describe them all if you wish.
+      Your response should be a JSON object of the shape { genre: string, celebrityRoles: { celebrity: string, role: string }[], summary: string }.
+      When referencing choices, don't use words like "I". Just describe how the genre and celebrity roles go with the text, regardless of who chose them.`,
+    },
+
+    colorPaletteAnalysis: {
+      function_tool: {
+        type: 'function',
+        function: {
+          name: 'colorPaletteAnalysis',
+          description: 'Generate a color palette that would go great with the provided book.',
+          parameters: {
+            type: 'object',
+            properties: {
+              colorPalette: {
+                type: 'array',
+                description: 'An array of colors comprising the chosen color palette.',
+                items: {
+                  type: 'object',
+                  description: 'A human readable name and associated hex code for one of the colors.',
+                  properties: {
+                    color: {
+                      type: 'string',
+                      description: 'Human-readable name of the color, like you might see on a paint swatch.',
+                    },
+                    hexCode: {
+                      type: 'string',
+                      description: 'A hex-code for the color that can be put directly into inline CSS styling.',
+                    },
+                  },
+                },
+              },
+              summary: {
+                type: 'string',
+                description:
+                  'A brief, few sentence summary highlighting specifics of the text that led to the results seen in the associated color palette analysis.',
+              },
+            },
+            required: ['colorPalette', 'summary'],
+          },
+        },
+      },
+      systemInstruction: `You are given a chunk of text. Read through the text and generate a color palette that suits the emotion and content of the text perfectly.
+      Your color palette should be between 3-5 colors. Also return a brief, few sentence summary describing specifics within or about the text
+      that led to the the chosen colors. Describe what parts of the communication style or wording might correspond to certain colors, and why.
+      Keep your summary to a couple sentences. You don't need to touch on everything. Be nice, and touch on at least two notable colors, or describe them all if you wish.
+      Your response should be a JSON object of the shape { colorPalette: { color: string, hexCode: string }[], summary: string }. When referencing chosen colors, don't use words like "I". Just describe how the colors go with the text, regardless of who chose them.`,
+    },
+
     big5Summary: {
       function_tool: {
         type: 'function',

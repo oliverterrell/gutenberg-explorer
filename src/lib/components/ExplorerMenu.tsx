@@ -7,7 +7,7 @@ import { useBookStore } from '@/lib/stores/BookStore';
 import { usePressEnterFor } from '@/lib/util';
 import { UtilActionType } from '@/shared';
 import { AiModel } from '@prisma/client';
-import { Fragment, memo, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { BrightnessLow, CheckCircleFill, ChevronLeft, Search, Stars, X, XLg } from 'react-bootstrap-icons';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -37,20 +37,32 @@ const MenuOption = ({ selected, onClick, name, isProcessing }: any) => {
 export const ExplorerMenu = () => {
   const { user, setUser, aiModels, setToast } = useApp();
 
-  const { gutenbergId, setGutenbergId, getBook, book, setBookIsLoading } = useBookStore(
+  const {
+    gutenbergId,
+    setGutenbergId,
+    getBook,
+    book,
+    setBookIsLoading,
+    setBook,
+    explorerMenuVisible,
+    setExplorerMenuVisible,
+  } = useBookStore(
     'getBook',
     'gutenbergId',
     'setGutenbergId',
     'book',
-    'setBookIsLoading'
+    'setBookIsLoading',
+    'setBook',
+    'explorerMenuVisible',
+    'setExplorerMenuVisible'
   );
   const { updateAppModal } = useAppModal('updateAppModal');
 
-  const [explorerMenuVisible, setExplorerMenuVisible] = useState(false);
   const [model, setModel] = useState<AiModel['name']>(user?.preference?.llmChoice ?? 'gemini-1.5-flash');
   const [modelUpdateProcessing, setModelUpdateProcessing] = useState(false);
-  const [alterSeedProcessing, setAlterSeedProcessing] = useState(false);
   const [big5Processing, setBig5Processing] = useState(false);
+  const [colorPaletteProcessing, setColorPaletteProcessing] = useState(false);
+  const [musicalTheatreProcessing, setMusicalTheatreProcessing] = useState(false);
 
   const updateUserLlmChoice = async (llmChoice: string) => {
     if (llmChoice === user.preference?.llmChoice) return;
@@ -83,31 +95,6 @@ export const ExplorerMenu = () => {
   };
 
   /**
-   * Alter Seed
-   */
-  const handleAlterSeed = async () => {
-    if (!book) {
-      setToast({ type: 'info', message: 'Please open a book first!' });
-      return;
-    }
-
-    setAlterSeedProcessing(true);
-
-    const seed =
-      'Hello and welcome to the Project Gutenberg Explorer! I am your host, Mariah Carey. How may I assist you today?';
-
-    const { data } = await apiClient.post('/util', {
-      seed,
-      action: UtilActionType.ALTER_SEED,
-    });
-
-    console.log(data.text);
-
-    updateAppModal({ title: book.title, subtitle: 'Alter Seed Analysis', body: data.text });
-    setAlterSeedProcessing(false);
-  };
-
-  /**
    * Big 5 Personality Traits
    */
   const handleBig5 = async () => {
@@ -118,9 +105,10 @@ export const ExplorerMenu = () => {
 
     setBig5Processing(true);
 
-    const authorResponse = await apiClient.post('/util', { book, action: UtilActionType.PARSE_AUTHOR });
-
-    const { data } = await apiClient.post('/big-5', { book });
+    const [authorResponse, big5Response] = await Promise.all([
+      apiClient.post('/util', { book, action: UtilActionType.PARSE_AUTHOR }),
+      apiClient.post('/big-5', { book }),
+    ]);
 
     updateAppModal({
       title: (
@@ -134,7 +122,7 @@ export const ExplorerMenu = () => {
           ) : null}
         </span>
       ),
-      subtitle: 'Big 5 Personality Traits Analysis',
+      subtitle: 'Big 5 Personality Traits 📊',
       body: (
         <Fragment>
           <div
@@ -142,7 +130,7 @@ export const ExplorerMenu = () => {
               'relative mx-auto my-6 flex w-[60%] flex-col gap-y-2 rounded-md border-2 border-orange-400 px-5 py-3 drop-shadow-md'
             }
           >
-            {Object.entries(data.big5).map(([aspect, score]: any, i: number) => {
+            {Object.entries(big5Response.data.big5).map(([aspect, score]: any, i: number) => {
               return (
                 <div
                   key={`big-5-${i}`}
@@ -154,11 +142,125 @@ export const ExplorerMenu = () => {
               );
             })}
           </div>
-          <div className={'mx-auto mb-2 mt-3 w-[90%] text-lg'}>{data.summary}</div>
+          <div className={'mx-auto mb-2 mt-3 w-[90%] text-lg'}>{big5Response.data.summary}</div>
         </Fragment>
       ),
     });
     setBig5Processing(false);
+  };
+
+  /**
+   * Color Palette
+   */
+  const handleColorPalette = async () => {
+    if (!book) {
+      setToast({ type: 'info', message: 'Please open a book first!' });
+      return;
+    }
+
+    setColorPaletteProcessing(true);
+
+    const [authorResponse, colorPaletteResponse] = await Promise.all([
+      apiClient.post('/util', { book, action: UtilActionType.PARSE_AUTHOR }),
+      apiClient.post('/color-palette', { book }),
+    ]);
+
+    updateAppModal({
+      title: (
+        <span>
+          {book.title}
+          {authorResponse?.data?.author ? (
+            <Fragment>
+              <br />
+              <span className={'text-lg'}>By {authorResponse.data.author}</span>
+            </Fragment>
+          ) : null}
+        </span>
+      ),
+      subtitle: `Color Palette ✨`,
+      body: (
+        <Fragment>
+          <div
+            className={'relative mx-auto my-6 flex w-[60%] flex-col gap-y-2 rounded-md px-5 py-3 drop-shadow-md'}
+          >
+            {colorPaletteResponse.data.colorPalette.slice(0, 5).map((colorObj: any, i: number) => {
+              const { color, hexCode } = colorObj;
+
+              return (
+                <div
+                  key={`color-palette-${i}`}
+                  className={`flex flex-row justify-between drop-shadow-none`}
+                  // style={{ color: hexCode }}
+                >
+                  <div className={'pt-3 font-bold text-lg'}>{color}</div>
+                  <div className={'h-12 w-12'} style={{ backgroundColor: hexCode }} />
+                </div>
+              );
+            })}
+          </div>
+          <div className={'mx-auto mb-2 mt-3 w-[90%] text-lg'}>{colorPaletteResponse.data.summary}</div>
+        </Fragment>
+      ),
+    });
+    setColorPaletteProcessing(false);
+  };
+
+  /**
+   * Musical Theatre
+   */
+  const handleMusicalTheatre = async () => {
+    if (!book) {
+      setToast({ type: 'info', message: 'Please open a book first!' });
+      return;
+    }
+
+    setMusicalTheatreProcessing(true);
+
+    const [authorResponse, musicalGenreResponse] = await Promise.all([
+      apiClient.post('/util', { book, action: UtilActionType.PARSE_AUTHOR }),
+      apiClient.post('/musical-theatre', { book }),
+    ]);
+
+    updateAppModal({
+      title: (
+        <span>
+          {book.title}
+          {authorResponse?.data?.author ? (
+            <Fragment>
+              <br />
+              <span className={'text-lg'}>By {authorResponse.data.author}</span>
+            </Fragment>
+          ) : null}
+        </span>
+      ),
+      subtitle: `Musical Theatre 🎭`,
+      body: (
+        <Fragment>
+          <div className={'mx-auto mb-2 mt-5 w-full text-center font-bold text-4xl'}>
+            {musicalGenreResponse.data.genre}
+          </div>
+          <div
+            className={'relative mx-auto my-6 flex w-[80%] flex-col gap-y-2 rounded-md px-5 py-3 drop-shadow-md'}
+          >
+            {musicalGenreResponse.data.celebrityRoles.map((celebrityRole: any, i: number) => {
+              const { celebrity, role } = celebrityRole;
+
+              return (
+                <div
+                  key={`color-palette-${i}`}
+                  className={`flex flex-row justify-between text-lg drop-shadow-none`}
+                >
+                  <div className={'font-bold'}>{celebrity}</div>
+                  <div className={'italic'}>{role}</div>
+                </div>
+              );
+            })}
+          </div>
+          <div className={'mx-auto mb-2 mt-3 w-[90%] text-lg'}>{musicalGenreResponse.data.summary}</div>
+        </Fragment>
+      ),
+    });
+    setMusicalTheatreProcessing(false);
   };
 
   usePressEnterFor(handleGetBook, !Number.isNaN(gutenbergId));
@@ -211,6 +313,17 @@ export const ExplorerMenu = () => {
                     Get book
                   </button>
                 </div>
+                {book ? (
+                  <div
+                    onClick={() => {
+                      setBook(null);
+                      setExplorerMenuVisible(false);
+                    }}
+                    className={'mt-2 w-full cursor-pointer pr-4 text-end underline underline-offset-2'}
+                  >
+                    Close current book
+                  </div>
+                ) : null}
               </div>
 
               {/** AI Analysis */}
@@ -225,7 +338,16 @@ export const ExplorerMenu = () => {
                   onClick={handleBig5}
                   isProcessing={big5Processing}
                 />
-                <MenuOption name={'Alter Seed'} onClick={handleAlterSeed} isProcessing={alterSeedProcessing} />
+                <MenuOption
+                  name={'Color Palette'}
+                  onClick={handleColorPalette}
+                  isProcessing={colorPaletteProcessing}
+                />
+                <MenuOption
+                  name={'Musical Theatre'}
+                  onClick={handleMusicalTheatre}
+                  isProcessing={musicalTheatreProcessing}
+                />
               </div>
 
               {/** AI Model Choice */}

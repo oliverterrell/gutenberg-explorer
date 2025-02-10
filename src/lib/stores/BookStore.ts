@@ -4,6 +4,9 @@ import { Book } from '@prisma/client';
 
 const createBookStore = (set: any, get: any) => {
   return {
+    explorerMenuVisible: false,
+    setExplorerMenuVisible: (explorerMenuVisible: boolean) => set({ explorerMenuVisible }),
+
     bookIsLoading: false,
     setBookIsLoading: (bookIsLoading: boolean) => set({ bookIsLoading }),
 
@@ -13,7 +16,7 @@ const createBookStore = (set: any, get: any) => {
     },
 
     book: null as Book,
-    setBook: (bookText: any) => set({ bookText }),
+    setBook: (book: Book) => set({ book, gutenbergId: null }),
 
     getBook: async () => {
       const { gutenbergId } = get();
@@ -22,7 +25,6 @@ const createBookStore = (set: any, get: any) => {
 
       const { data } = await apiClient.get(`/gutenberg-book`, { params: { gutenbergId } });
 
-      console.log(data);
       set({ book: data.book, bookIsLoading: false });
     },
 

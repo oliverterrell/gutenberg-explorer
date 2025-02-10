@@ -34,6 +34,30 @@ export abstract class AbstractAiModelService {
     return await this.run(request);
   }
 
+  async getMusicalTheatre(
+    book: Book
+  ): Promise<{ genre: string; celebrityRoles: Record<string, string>[]; summary: string }> {
+    const request = await this.buildRequest({
+      method: 'musicalTheatreAnalysis',
+      messages: {
+        user: [JSON.stringify(book)],
+      },
+    });
+
+    return await this.run(request);
+  }
+
+  async getColorPalette(book: Book): Promise<{ colorPalette: Record<string, string>[]; summary: string }> {
+    const request = await this.buildRequest({
+      method: 'colorPaletteAnalysis',
+      messages: {
+        user: [JSON.stringify(book)],
+      },
+    });
+
+    return await this.run(request);
+  }
+
   async getBig5Summary(text: string, big5: Record<string, number>): Promise<{ summary: string }> {
     const userMessages = [
       `---\n# Text:\n${text}\n`,

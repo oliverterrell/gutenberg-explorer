@@ -3,17 +3,21 @@ import { Book } from '@prisma/client';
 import { Fragment, useLayoutEffect } from 'react';
 
 export const TopLists = () => {
-  const { mostRecentList, mostPopularList, setGutenbergId, getBook, getLists } = useBookStore(
-    'getBook',
-    'getLists',
-    'mostRecentList',
-    'setGutenbergId',
-    'mostPopularList'
-  );
+  const { mostRecentList, mostPopularList, setGutenbergId, getBook, getLists, setExplorerMenuVisible } =
+    useBookStore(
+      'getBook',
+      'getLists',
+      'mostRecentList',
+      'setGutenbergId',
+      'mostPopularList',
+      'setExplorerMenuVisible'
+    );
 
   const handleSelectBook = (selectedId: number) => {
     setGutenbergId(selectedId);
-    getBook();
+    getBook().then(() => {
+      setExplorerMenuVisible(false);
+    });
   };
 
   useLayoutEffect(() => {
@@ -27,6 +31,7 @@ export const TopLists = () => {
       {mostRecentList.length > 0 ? (
         <Fragment>
           <div className={'mt-3 font-bold text-xl'}>Recent Books</div>
+          <div className={'text-sm text-gray-400'}>These are the latest books checked out by the community</div>
           <hr className={'mb-3'} />
           <div className={'max-w-[calc(100dvw - 10%)] no-sb flex flex-row gap-x-2 overflow-x-auto'}>
             {mostRecentList.map((recentBook: Book, i: number) => {
@@ -49,6 +54,7 @@ export const TopLists = () => {
           <br />
           <br />
           <div className={'mt-4 font-bold text-xl'}>Most Requested Books</div>
+          <div className={'text-sm text-gray-400'}>These books are the most popular!</div>
           <hr className={'mb-3'} />
           <div className={'max-w-[calc(100dvw - 10%)] no-sb flex flex-row gap-x-2 overflow-x-auto'}>
             {mostPopularList.map((popularBook: Book, i: number) => {
