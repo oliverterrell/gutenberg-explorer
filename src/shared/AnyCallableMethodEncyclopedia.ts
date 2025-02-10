@@ -90,6 +90,56 @@ const getAnyCallableMethodEncyclopedia = (): Record<string, AcmeDefinition> => {
       } as AcmeParameters,
     } as AcmeDefinition,
 
+    parseAuthor: {
+      function_tool: {
+        type: 'function',
+        function: {
+          name: 'parseAuthor',
+          description: `Return the author or author's name(s) in a simple string format for display on a webpage.`,
+          parameters: {
+            type: 'object',
+            properties: {
+              author: {
+                type: 'string',
+                description: 'The simplified string of author or authors names',
+              },
+            },
+            required: ['author'],
+          },
+        },
+      },
+      systemInstruction: `Given book info, return a simplified string of the author or author's names.
+      For example, if the author is listed as ["Carroll, Lewis"], then return { author: "Lewis Carroll" }.
+      If the authors are listed as ["Carroll, Lewis", "Stetson, Björn"] then return { author: "Lewis Carroll & Björn Stetson" }.
+      For other variations on authorship, follow these guidelines to return something simple and pleasing to the eye in string format.
+      Your response should be a JSON object of the shape { author: string }.`,
+    },
+
+    big5Summary: {
+      function_tool: {
+        type: 'function',
+        function: {
+          name: 'big5Summary',
+          description: `Return a brief summary explaining how specifics of the text lead to the results seen in the Big 5 Personality Traits analysis.`,
+          parameters: {
+            type: 'object',
+            properties: {
+              summary: {
+                type: 'string',
+                description:
+                  'A brief, few sentence summary highlighting specifics of the text that led to the results seen in the associated Big 5 analysis.',
+              },
+            },
+            required: ['summary'],
+          },
+        },
+      },
+      systemInstruction: `You are given a chunk of text and associated Big 5 Personality Traits analysis results. Read through the text and find specifics within it or about it
+      that led to the results seen in the analysis results. Describe what parts of the communication style or wording might correspond to scores that stand out, and why.
+      Keep your response to a couple sentences. You don't need to touch on everything. Be nice, and touch on at least two notable big five traits, high or low.
+      Don't reference "data" in your response, instead keep the focus on the words. Your response should be a JSON object of the shape { summary: string }.`,
+    },
+
     isExplicit: {
       function_tool: {
         type: 'function',

@@ -5,6 +5,7 @@ import { useAppModal } from '@/lib/components/AppModal';
 import { useApp } from '@/lib/providers/AppProvider';
 import { useBookStore } from '@/lib/stores/BookStore';
 import { usePressEnterFor } from '@/lib/util';
+import { UtilActionType } from '@/shared';
 import { AiModel } from '@prisma/client';
 import { Fragment, memo, useState } from 'react';
 import { BrightnessLow, CheckCircleFill, ChevronLeft, Search, Stars, X, XLg } from 'react-bootstrap-icons';
@@ -36,11 +37,12 @@ const MenuOption = ({ selected, onClick, name, isProcessing }: any) => {
 export const ExplorerMenu = () => {
   const { user, setUser, aiModels, setToast } = useApp();
 
-  const { gutenbergId, setGutenbergId, getBook, book } = useBookStore(
+  const { gutenbergId, setGutenbergId, getBook, book, setBookIsLoading } = useBookStore(
     'getBook',
     'gutenbergId',
     'setGutenbergId',
-    'book'
+    'book',
+    'setBookIsLoading'
   );
   const { updateAppModal } = useAppModal('updateAppModal');
 
@@ -48,6 +50,7 @@ export const ExplorerMenu = () => {
   const [model, setModel] = useState<AiModel['name']>(user?.preference?.llmChoice ?? 'gemini-1.5-flash');
   const [modelUpdateProcessing, setModelUpdateProcessing] = useState(false);
   const [alterSeedProcessing, setAlterSeedProcessing] = useState(false);
+  const [big5Processing, setBig5Processing] = useState(false);
 
   const updateUserLlmChoice = async (llmChoice: string) => {
     if (llmChoice === user.preference?.llmChoice) return;
@@ -56,7 +59,7 @@ export const ExplorerMenu = () => {
     setModel(llmChoice);
     setModelUpdateProcessing(true);
     apiClient
-      .patch('/current-user', { user, preference: { llmChoice } })
+      .patch('/current-user', { preference: { llmChoice } })
       .then((res) => {
         setUser(res.data.user);
         setModel(res.data.user.preference?.llmChoice ?? 'gemini-1.5-flash');
@@ -72,9 +75,16 @@ export const ExplorerMenu = () => {
       .then(() => {
         setExplorerMenuVisible(false);
       })
-      .catch((err: any) => console.log(err));
+      .catch((err: any) => {
+        setToast({ type: 'info', message: "Couldn't find that book" });
+        setBookIsLoading(false);
+        console.log(err);
+      });
   };
 
+  /**
+   * Alter Seed
+   */
   const handleAlterSeed = async () => {
     if (!book) {
       setToast({ type: 'info', message: 'Please open a book first!' });
@@ -86,16 +96,69 @@ export const ExplorerMenu = () => {
     const seed =
       'Hello and welcome to the Project Gutenberg Explorer! I am your host, Mariah Carey. How may I assist you today?';
 
-    const { data } = await apiClient.post('/alter-seed', {
+    const { data } = await apiClient.post('/util', {
       seed,
-      llmChoice: user.preference?.llmChoice ?? 'gpt-4o',
+      action: UtilActionType.ALTER_SEED,
     });
 
     console.log(data.text);
 
-    updateAppModal({ title: 'Alter Seed', body: data.text });
+    updateAppModal({ title: book.title, subtitle: 'Alter Seed Analysis', body: data.text });
     setAlterSeedProcessing(false);
-    return data.text;
+  };
+
+  /**
+   * Big 5 Personality Traits
+   */
+  const handleBig5 = async () => {
+    if (!book) {
+      setToast({ type: 'info', message: 'Please open a book first!' });
+      return;
+    }
+
+    setBig5Processing(true);
+
+    const authorResponse = await apiClient.post('/util', { book, action: UtilActionType.PARSE_AUTHOR });
+
+    const { data } = await apiClient.post('/big-5', { book });
+
+    updateAppModal({
+      title: (
+        <span>
+          {book.title}
+          {authorResponse?.data?.author ? (
+            <Fragment>
+              <br />
+              <span className={'text-lg'}>By {authorResponse.data.author}</span>
+            </Fragment>
+          ) : null}
+        </span>
+      ),
+      subtitle: 'Big 5 Personality Traits Analysis',
+      body: (
+        <Fragment>
+          <div
+            className={
+              'relative mx-auto my-6 flex w-[60%] flex-col gap-y-2 rounded-md border-2 border-orange-400 px-5 py-3 drop-shadow-md'
+            }
+          >
+            {Object.entries(data.big5).map(([aspect, score]: any, i: number) => {
+              return (
+                <div
+                  key={`big-5-${i}`}
+                  className={`flex flex-row justify-between drop-shadow-none ${score <= 25 ? 'text-rose-600' : score <= 50 ? 'text-yellow-500' : score <= 75 ? 'text-teal-400' : 'text-emerald-500'}`}
+                >
+                  <div className={'font-bold text-lg'}>{aspect}</div>
+                  <div className={'font-jetbrains'}>{score}%</div>
+                </div>
+              );
+            })}
+          </div>
+          <div className={'mx-auto mb-2 mt-3 w-[90%] text-lg'}>{data.summary}</div>
+        </Fragment>
+      ),
+    });
+    setBig5Processing(false);
   };
 
   usePressEnterFor(handleGetBook, !Number.isNaN(gutenbergId));
@@ -157,7 +220,11 @@ export const ExplorerMenu = () => {
                 >
                   Run Analysis <Stars className={`translate-y-0.5`} />
                 </div>
-                <MenuOption name={'Big 5 Personality Traits'} />
+                <MenuOption
+                  name={'Big 5 Personality Traits'}
+                  onClick={handleBig5}
+                  isProcessing={big5Processing}
+                />
                 <MenuOption name={'Alter Seed'} onClick={handleAlterSeed} isProcessing={alterSeedProcessing} />
               </div>
 

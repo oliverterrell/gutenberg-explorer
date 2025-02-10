@@ -57,8 +57,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
       },
     });
 
-    console.log(book);
-
     return NextResponse.json({ book }, { status: 200 });
   } catch (error) {
     console.log(error);
