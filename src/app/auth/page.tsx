@@ -94,10 +94,10 @@ export default function Page() {
   return (
     <div
       key={`auth-page-ui`}
-      className={`relative mx-auto flex w-[80%] flex-col items-center justify-center p-3 md:-top-20 md:my-auto md:max-h-[62dvh] md:w-full`}
+      className={`relative mx-auto flex w-[300px] flex-col items-center justify-center p-3 md:-top-20 md:my-auto md:max-h-[62dvh] md:w-full`}
     >
-      <div className={`flex w-[400px] flex-col items-start justify-center text-white`}>
-        <h1 className={`my-3 text-lg font-semibold md:text-3xl`}>Project Gutenberg Explorer&ensp;📖</h1>
+      <div className={`flex w-[300px] flex-col items-start justify-center text-white md:w-[400px]`}>
+        <h1 className={`my-3 text-xl font-semibold md:text-3xl`}>Project Gutenberg Explorer&ensp;📖</h1>
         <h3 className={`mb-8 py-4 text-sm font-light`}>
           Explore <span className={'italic'}>Project Gutenberg</span>—a volunteer-supported digital archive of
           cultural works, and the world&apos;s oldest digital library.
