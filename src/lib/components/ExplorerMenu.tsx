@@ -78,7 +78,7 @@ export const ExplorerMenu = () => {
       }, 18000);
       longProcessingTimeout = setTimeout(() => {
         setToast({ type: 'info', message: `This will be complete soon. How's your day going?` });
-      }, 30000);
+      }, 30001);
     } else if (toast?.type === 'info') {
       setToast(null);
     }
