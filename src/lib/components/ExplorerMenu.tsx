@@ -405,17 +405,19 @@ export const ExplorerMenu = () => {
                 <div className={`w-[90%] border-b border-gray-200 pb-0.5 pl-3 pt-1.5 text-left font-bold`}>
                   AI Model Choice
                 </div>
-                {aiModels.map((aiModel, i) => {
-                  return (
-                    <MenuOption
-                      isProcessing={aiModel.model === model && modelUpdateProcessing}
-                      key={`ai-model-menu-option-${i}`}
-                      selected={(user?.preference?.llmChoice ?? 'gemini-1.5-flash') === aiModel.model}
-                      onClick={() => updateUserLlmChoice(aiModel.model)}
-                      name={aiModel.name}
-                    />
-                  );
-                })}
+                {aiModels
+                  .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                  .map((aiModel, i) => {
+                    return (
+                      <MenuOption
+                        isProcessing={aiModel.model === model && modelUpdateProcessing}
+                        key={`ai-model-menu-option-${i}`}
+                        selected={(user?.preference?.llmChoice ?? 'gemini-1.5-flash') === aiModel.model}
+                        onClick={() => updateUserLlmChoice(aiModel.model)}
+                        name={aiModel.name}
+                      />
+                    );
+                  })}
               </div>
             </div>
           </motion.aside>
