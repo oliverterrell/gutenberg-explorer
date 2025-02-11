@@ -11,7 +11,7 @@ export const EPUBReader = () => {
 
   return (
     <div className="mx-auto h-screen max-w-4xl">
-      <div className="mt-4 h-[700px] w-[600px] bg-orange-100 shadow-all-md shadow-gray-200">
+      <div className="mt-4 h-[550px] w-[400px] bg-orange-100 shadow-all-md shadow-gray-200 md:h-[700px] md:w-[600px]">
         <ReactReader
           url={book.eBookUrl}
           location={location}

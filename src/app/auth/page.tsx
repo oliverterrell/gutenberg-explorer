@@ -97,7 +97,7 @@ export default function Page() {
       className={`relative -top-20 flex w-full flex-col items-center justify-center p-3 md:my-auto md:max-h-[62dvh]`}
     >
       <div className={`flex w-[400px] flex-col items-start justify-center text-white`}>
-        <h1 className={`my-3 text-3xl font-semibold`}>Project Gutenberg Explorer&ensp;📖</h1>
+        <h1 className={`my-3 text-lg font-semibold md:text-3xl`}>Project Gutenberg Explorer&ensp;📖</h1>
         <h3 className={`mb-8 py-4 text-sm font-light`}>
           Explore <span className={'italic'}>Project Gutenberg</span>—a volunteer-supported digital archive of
           cultural works, and the world&apos;s oldest digital library.
