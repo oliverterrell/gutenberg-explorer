@@ -58,7 +58,7 @@ export const AppModal = () => {
           animate={{ scale: 1 }}
           transition={{ duration: 0.3, ease: 'linear' }}
           exit={{ scale: 0 }}
-          className="relative top-20 z-[1111] m-auto flex w-[600px] flex-col rounded-xl bg-white p-6 text-black"
+          className="relative top-20 z-[1111] m-auto flex w-[330px] flex-col rounded-xl bg-white p-6 text-black md:w-[600px]"
         >
           <div>
             {title && <div className="mb-1 w-full text-start text-3xl">{title}</div>}
