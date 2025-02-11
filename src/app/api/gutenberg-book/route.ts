@@ -1,5 +1,6 @@
 import { prisma } from '@/server/clients/prismaClient';
 import { BookService } from '@/server/services/BookService';
+import { RequestHelper } from '@/server/services/RequestHelper';
 import { S3ActionType } from '@/shared';
 import axios from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
@@ -10,10 +11,21 @@ export async function GET(req: NextRequest, res: NextResponse) {
   const gutenbergId = parseInt(gutenbergIdParam);
 
   try {
+    const user = await RequestHelper.getCurrentUser(req);
     const existingBook = await prisma.book.findUnique({ where: { gutenbergId } });
 
     if (existingBook) {
-      await prisma.book.update({ where: { gutenbergId }, data: { timesRequested: { increment: 1 } } });
+      const book = await prisma.book.update({
+        where: { gutenbergId },
+        data: { timesRequested: { increment: 1 } },
+      });
+
+      await prisma.userBook.upsert({
+        where: { userId_bookId: { userId: user.id, bookId: book.id } },
+        create: { userId: user.id, bookId: book.id },
+        update: { count: { increment: 1 } },
+      });
+
       return Response.json({ book: existingBook }, { status: 200 });
     }
 
@@ -55,6 +67,12 @@ export async function GET(req: NextRequest, res: NextResponse) {
         copyright,
         summaries,
       },
+    });
+
+    await prisma.userBook.upsert({
+      where: { userId_bookId: { userId: user.id, bookId: book.id } },
+      create: { userId: user.id, bookId: book.id },
+      update: { count: { increment: 1 } },
     });
 
     return NextResponse.json({ book }, { status: 200 });

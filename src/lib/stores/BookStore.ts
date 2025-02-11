@@ -30,11 +30,12 @@ const createBookStore = (set: any, get: any) => {
 
     mostPopularList: [] as Book[],
     mostRecentList: [] as Book[],
+    userBookList: [] as Book[],
 
     getLists: async () => {
       try {
         const { data } = await apiClient.get(`/list`);
-        set({ mostPopularList: data.mostPopular, mostRecentList: data.mostRecent });
+        set({ mostPopularList: data.mostPopular, mostRecentList: data.mostRecent, userBookList: data.userBooks });
       } catch (error) {
         console.log(error);
       }

@@ -1,9 +1,6 @@
-export enum Big5Aspect {
-  OPENNESS = 'Openness',
-  CONSCIENTIOUSNESS = 'Conscientiousness',
-  EXTRAVERSION = 'Extraversion',
-  AGREEABLENESS = 'Agreeableness',
-  NEUROTICISM = 'Neuroticism',
+export enum CurrentUserActionType {
+  USER = 'user',
+  BOOKS = 'books',
 }
 
 export enum S3ActionType {

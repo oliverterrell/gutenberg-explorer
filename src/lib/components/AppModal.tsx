@@ -42,15 +42,19 @@ export const AppModal = () => {
     };
 
     if (appModalVisible) {
+      document.body.classList.add('bg-gray-600', 'bg-opacity-30');
       document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.body.classList.remove('bg-gray-600', 'bg-opacity-30');
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
     }
   }, [dismissible, appModalVisible, setAppModalVisible]);
 
   if (!appModalVisible) return null;
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 top-0 z-[1100] h-full w-full flex-1 cursor-default flex-col justify-end bg-gray-600 bg-opacity-30">
+    <div className="min-h-content absolute bottom-0 left-0 right-0 top-0 z-[1100] h-full w-full flex-1 cursor-default flex-col justify-end">
       <AnimatePresence>
         <motion.div
           ref={ref}
