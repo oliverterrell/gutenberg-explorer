@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "seed": "npx tsx prisma/seed.ts",
-    "prebuild": "npm run seed",
+    "prebuild": "npm run seed && prisma generate",
     "build": "prisma generate --no-hints && next build",
+    "start": "next start",
     "prod": "npm run build && next start",
     "lint": "next lint"
   },
