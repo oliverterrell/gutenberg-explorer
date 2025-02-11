@@ -1,4 +1,3 @@
-import { Big5Aspect } from '@/shared';
 import axios from 'axios';
 
 export class SymantoService {
