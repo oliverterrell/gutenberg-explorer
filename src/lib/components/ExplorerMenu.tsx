@@ -338,7 +338,7 @@ export const ExplorerMenu = () => {
                 className={`flex cursor-pointer flex-row justify-between gap-x-6 bg-accent bg-opacity-90 px-3 py-4 text-gray-800`}
               >
                 <ChevronLeft className={'text-xl'} />
-                <div className={`font-bold text-xl leading-tight`}>Explorer Menu</div>
+                <div className={`font-bold text-base leading-tight md:text-xl`}>Explorer Menu</div>
                 <XLg className={'pt-0.5 text-xl'} />
               </div>
 
