@@ -153,7 +153,7 @@ export const ExplorerMenu = () => {
         <Fragment>
           <div
             className={
-              'relative mx-auto my-6 flex w-[60%] flex-col gap-y-2 rounded-md border-2 border-orange-400 px-5 py-3 drop-shadow-md'
+              'relative mx-auto my-6 flex w-full flex-col gap-y-2 rounded-md border-2 border-orange-400 px-5 py-3 drop-shadow-md md:w-[60%]'
             }
           >
             {Object.entries(big5Response.data.big5).map(([aspect, score]: any, i: number) => {
@@ -168,8 +168,8 @@ export const ExplorerMenu = () => {
               );
             })}
           </div>
-          <div className={'mx-auto mb-2 mt-3 w-[90%] text-lg'}>{big5Response.data.summary}</div>
-          <div className={'my-4 w-[97%] text-right text-base italic text-gray-400'}>
+          <div className={'mx-auto mb-2 mt-3 w-full text-lg md:w-[90%]'}>{big5Response.data.summary}</div>
+          <div className={'my-4 w-full text-right text-base italic text-gray-400 md:w-[97%]'}>
             –{' '}
             {
               aiModels.find((aiModel) => aiModel.model === (user?.preference?.llmChoice ?? 'gemini-1.5-flash'))
@@ -214,7 +214,9 @@ export const ExplorerMenu = () => {
       body: (
         <Fragment>
           <div
-            className={'relative mx-auto my-6 flex w-[60%] flex-col gap-y-2 rounded-md px-5 py-3 drop-shadow-md'}
+            className={
+              'relative mx-auto my-6 flex w-full flex-col gap-y-2 rounded-md px-5 py-3 drop-shadow-md md:w-[60%]'
+            }
           >
             {colorPaletteResponse.data.colorPalette.slice(0, 5).map((colorObj: any, i: number) => {
               const { color, hexCode } = colorObj;
@@ -231,8 +233,8 @@ export const ExplorerMenu = () => {
               );
             })}
           </div>
-          <div className={'mx-auto mb-2 mt-3 w-[90%] text-lg'}>{colorPaletteResponse.data.summary}</div>
-          <div className={'my-4 w-[90%] text-right text-base italic text-gray-400'}>
+          <div className={'mx-auto mb-2 mt-3 w-full text-lg md:w-[90%]'}>{colorPaletteResponse.data.summary}</div>
+          <div className={'my-4 w-full text-right text-base italic text-gray-400 md:w-[90%]'}>
             –{' '}
             {
               aiModels.find((aiModel) => aiModel.model === (user?.preference?.llmChoice ?? 'gemini-1.5-flash'))
@@ -280,7 +282,9 @@ export const ExplorerMenu = () => {
             {musicalGenreResponse.data.genre}
           </div>
           <div
-            className={'relative mx-auto my-6 flex w-[80%] flex-col gap-y-2 rounded-md px-5 py-3 drop-shadow-md'}
+            className={
+              'relative mx-auto my-6 flex w-full flex-col gap-y-2 rounded-md px-5 py-3 drop-shadow-md md:w-[80%]'
+            }
           >
             {musicalGenreResponse.data.celebrityRoles.map((celebrityRole: any, i: number) => {
               const { celebrity, role } = celebrityRole;
@@ -296,8 +300,8 @@ export const ExplorerMenu = () => {
               );
             })}
           </div>
-          <div className={'mx-auto mb-2 mt-3 w-[90%] text-lg'}>{musicalGenreResponse.data.summary}</div>
-          <div className={'my-4 w-[90%] text-right text-base italic text-gray-400'}>
+          <div className={'mx-auto mb-2 mt-3 w-full text-lg md:w-[90%]'}>{musicalGenreResponse.data.summary}</div>
+          <div className={'my-4 w-full text-right text-base italic text-gray-400 md:w-[90%]'}>
             –{' '}
             {
               aiModels.find((aiModel) => aiModel.model === (user?.preference?.llmChoice ?? 'gemini-1.5-flash'))

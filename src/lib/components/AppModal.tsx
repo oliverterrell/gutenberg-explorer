@@ -60,6 +60,12 @@ export const AppModal = () => {
           exit={{ scale: 0 }}
           className="relative top-20 z-[1111] m-auto flex w-[330px] flex-col rounded-xl bg-white p-6 text-black md:w-[600px]"
         >
+          <div
+            className={'absolute right-3 top-3 cursor-pointer font-bold'}
+            onClick={() => setAppModalVisible(false)}
+          >
+            X
+          </div>
           <div>
             {title && <div className="mb-1 w-full text-start text-3xl">{title}</div>}
             {subtitle && (
