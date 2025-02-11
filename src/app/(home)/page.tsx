@@ -28,7 +28,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-start p-8">
+    <div className="flex min-h-screen w-full flex-col items-center justify-start p-6 md:p-8">
       <PageLoadSpinner isLoading={bookIsLoading} />
       <AppModal />
       <div className={'flex h-14 w-screen flex-row justify-between border-b border-gray-400'}>
