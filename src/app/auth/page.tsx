@@ -94,7 +94,7 @@ export default function Page() {
   return (
     <div
       key={`auth-page-ui`}
-      className={`relative -top-20 flex w-full flex-col items-center justify-center p-3 md:my-auto md:max-h-[62dvh]`}
+      className={`relative mx-auto flex w-[80%] flex-col items-center justify-center p-3 md:-top-20 md:my-auto md:max-h-[62dvh] md:w-full`}
     >
       <div className={`flex w-[400px] flex-col items-start justify-center text-white`}>
         <h1 className={`my-3 text-lg font-semibold md:text-3xl`}>Project Gutenberg Explorer&ensp;📖</h1>

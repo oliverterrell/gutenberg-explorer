@@ -347,7 +347,7 @@ export const ExplorerMenu = () => {
                 <div className={`w-[90%] border-b border-gray-200 pb-0.5 pl-3 pt-1.5 text-left font-bold`}>
                   Book Finder
                 </div>
-                <div className={'ml-2 mt-1 flex flex-row gap-x-3'}>
+                <div className={'ml-2 mt-2 flex flex-row gap-x-3'}>
                   <input
                     type={'number'}
                     value={gutenbergId || ''}
