@@ -61,7 +61,7 @@ export const AppModal = () => {
           className="relative top-20 z-[1111] m-auto flex w-[330px] flex-col rounded-xl bg-white p-6 text-black md:w-[600px]"
         >
           <div
-            className={'absolute right-3 top-3 cursor-pointer font-bold'}
+            className={'absolute right-5 top-4 scale-x-150 cursor-pointer text-xl'}
             onClick={() => setAppModalVisible(false)}
           >
             X
