@@ -96,8 +96,8 @@ export default function Page() {
       key={`auth-page-ui`}
       className={`relative mx-auto flex w-[300px] flex-col items-center justify-center p-3 md:-top-20 md:my-auto md:max-h-[62dvh] md:w-full`}
     >
-      <div className={`flex w-[300px] flex-col items-start justify-center text-white md:w-[400px]`}>
-        <h1 className={`my-3 text-xl font-semibold md:text-3xl`}>Project Gutenberg Explorer&ensp;📖</h1>
+      <div className={`flex w-[330px] flex-col items-start justify-center text-white md:w-[400px]`}>
+        <h1 className={`my-3 text-2xl font-semibold md:text-3xl`}>Project Gutenberg Explorer&ensp;📖</h1>
         <h3 className={`mb-8 py-4 text-sm font-light`}>
           Explore <span className={'italic'}>Project Gutenberg</span>—a volunteer-supported digital archive of
           cultural works, and the world&apos;s oldest digital library.
@@ -107,7 +107,7 @@ export default function Page() {
         </h3>
       </div>
 
-      <div className={`flex w-[400px] flex-row justify-end pb-2 will-change-transform`}>
+      <div className={`flex w-[300px] flex-row justify-end pb-2 will-change-transform md:w-[400px]`}>
         <Button
           type={ButtonType.LINK}
           onClick={() => setIsRegistration(!isRegistration)}
@@ -119,7 +119,7 @@ export default function Page() {
       <LayoutGroup>
         <div className={`flex-page-full flex-col`}>
           <motion.div layout className={'flex-page-full justify-between gap-y-6 md:justify-start'}>
-            <motion.div layout className={`flex w-[400px] flex-col items-start gap-y-6`}>
+            <motion.div layout className={`flex w-[300px] flex-col items-start gap-y-6 md:w-[400px]`}>
               {isRegistration ? (
                 <motion.div
                   initial={{ opacity: 0 }}
