@@ -14,6 +14,12 @@ const aiModels: Prisma.AiModelCreateInput[] = [
     provider: 'Open AI',
     class: 'llm',
   },
+  {
+    model: 'claude-3-5-sonnet-20241022',
+    name: 'Claude',
+    provider: 'Anthropic',
+    class: 'llm',
+  },
 ];
 
 async function seed() {

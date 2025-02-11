@@ -7,7 +7,7 @@ import { useBookStore } from '@/lib/stores/BookStore';
 import { usePressEnterFor } from '@/lib/util';
 import { UtilActionType } from '@/shared';
 import { AiModel } from '@prisma/client';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { BrightnessLow, CheckCircleFill, ChevronLeft, Search, Stars, X, XLg } from 'react-bootstrap-icons';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -63,6 +63,32 @@ export const ExplorerMenu = () => {
   const [big5Processing, setBig5Processing] = useState(false);
   const [colorPaletteProcessing, setColorPaletteProcessing] = useState(false);
   const [musicalTheatreProcessing, setMusicalTheatreProcessing] = useState(false);
+
+  useEffect(() => {
+    let processingTimeout: NodeJS.Timeout;
+    let stillProcessingTimeout: NodeJS.Timeout;
+    let longProcessingTimeout: NodeJS.Timeout;
+
+    if (big5Processing || colorPaletteProcessing || musicalTheatreProcessing) {
+      processingTimeout = setTimeout(() => {
+        setToast({ type: 'info', message: 'Processing... Please wait!' });
+      }, 5000);
+      stillProcessingTimeout = setTimeout(() => {
+        setToast({ type: 'info', message: 'Still Processing... One moment please!' });
+      }, 18000);
+      longProcessingTimeout = setTimeout(() => {
+        setToast({ type: 'info', message: `This will be complete soon. How's your day going?` });
+      }, 30000);
+    } else {
+      setToast(null);
+    }
+
+    return () => {
+      clearTimeout(processingTimeout);
+      clearTimeout(stillProcessingTimeout);
+      clearTimeout(longProcessingTimeout);
+    };
+  }, [big5Processing, colorPaletteProcessing, musicalTheatreProcessing]);
 
   const updateUserLlmChoice = async (llmChoice: string) => {
     if (llmChoice === user.preference?.llmChoice) return;
@@ -143,6 +169,13 @@ export const ExplorerMenu = () => {
             })}
           </div>
           <div className={'mx-auto mb-2 mt-3 w-[90%] text-lg'}>{big5Response.data.summary}</div>
+          <div className={'my-4 w-[97%] text-right text-base italic text-gray-400'}>
+            –{' '}
+            {
+              aiModels.find((aiModel) => aiModel.model === (user?.preference?.llmChoice ?? 'gemini-1.5-flash'))
+                .name
+            }
+          </div>
         </Fragment>
       ),
     });
@@ -199,6 +232,13 @@ export const ExplorerMenu = () => {
             })}
           </div>
           <div className={'mx-auto mb-2 mt-3 w-[90%] text-lg'}>{colorPaletteResponse.data.summary}</div>
+          <div className={'my-4 w-[90%] text-right text-base italic text-gray-400'}>
+            –{' '}
+            {
+              aiModels.find((aiModel) => aiModel.model === (user?.preference?.llmChoice ?? 'gemini-1.5-flash'))
+                .name
+            }
+          </div>
         </Fragment>
       ),
     });
@@ -257,6 +297,13 @@ export const ExplorerMenu = () => {
             })}
           </div>
           <div className={'mx-auto mb-2 mt-3 w-[90%] text-lg'}>{musicalGenreResponse.data.summary}</div>
+          <div className={'my-4 w-[90%] text-right text-base italic text-gray-400'}>
+            –{' '}
+            {
+              aiModels.find((aiModel) => aiModel.model === (user?.preference?.llmChoice ?? 'gemini-1.5-flash'))
+                .name
+            }
+          </div>
         </Fragment>
       ),
     });
@@ -267,6 +314,9 @@ export const ExplorerMenu = () => {
 
   return (
     <Fragment>
+      <div
+        className={`fixed inset-0 z-[9000] ${big5Processing || colorPaletteProcessing || musicalTheatreProcessing ? '' : 'hidden'}`}
+      />
       <div
         className={`absolute left-5 mt-0 flex cursor-pointer flex-row gap-x-3 text-3xl`}
         onClick={() => setExplorerMenuVisible(true)}

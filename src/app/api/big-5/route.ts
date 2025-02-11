@@ -19,7 +19,11 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: 'Error reading Big 5' }, { status: 200 });
     }
 
-    const { summary } = await aiModelService.getBig5Summary(bookText, big5 as Record<string, number>);
+    // 350,000 chars = ~100,000 tokens. Just under OpenAI's limit of 128,000 tokens (most restrictive), hedged for safety.
+    const MAX_CHARS = 350000;
+    const trimmedText = bookText.slice(0, MAX_CHARS);
+
+    const { summary } = await aiModelService.getBig5Summary(trimmedText, big5 as Record<string, number>);
 
     return Response.json({ big5, summary }, { status: 200 });
   } catch (error) {
