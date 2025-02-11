@@ -35,7 +35,7 @@ const MenuOption = ({ selected, onClick, name, isProcessing }: any) => {
 };
 
 export const ExplorerMenu = () => {
-  const { user, setUser, aiModels, setToast } = useApp();
+  const { user, setUser, aiModels, setToast, toast } = useApp();
 
   const {
     gutenbergId,
@@ -79,7 +79,7 @@ export const ExplorerMenu = () => {
       longProcessingTimeout = setTimeout(() => {
         setToast({ type: 'info', message: `This will be complete soon. How's your day going?` });
       }, 30000);
-    } else {
+    } else if (toast?.type === 'info') {
       setToast(null);
     }
 

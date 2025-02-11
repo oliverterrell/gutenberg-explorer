@@ -15,11 +15,12 @@ type AppContext = {
   user?: ZUser;
   aiModels?: AiModel[];
   setUser?: (user: ZUser) => void;
+  toast?: Toast;
   setToast?: (message: Toast, localStorageKey?: LSMessageKey) => void;
 };
 
 export const AppProvider = ({ children }) => {
-  const { Toast, setToast } = useToast();
+  const { Toast, setToast, toast } = useToast();
 
   const [user, setUser] = useState<ZUser>(null);
   const [aiModels, setAiModels] = useState<AiModel[]>([]);
@@ -47,6 +48,7 @@ export const AppProvider = ({ children }) => {
         user,
         setUser,
         aiModels,
+        toast,
         setToast,
       }}
     >
