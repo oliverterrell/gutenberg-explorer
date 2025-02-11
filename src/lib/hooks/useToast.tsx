@@ -72,7 +72,7 @@ export const useToast = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2, delay: 0 }}
             exit={{ opacity: 0, y: -50, transition: { duration: 0.1, delay: 0 } }}
-            className={`fixed top-1.5 z-50 flex max-h-[110px] w-fit min-w-24 max-w-[404px] flex-1 flex-row justify-evenly gap-x-3.5 rounded-xl bg-white px-8 py-2.5 text-center text-sm font-semibold leading-none text-black shadow-md`}
+            className={`fixed top-1.5 z-[9999] flex max-h-[110px] w-fit min-w-24 max-w-[404px] flex-1 flex-row justify-evenly gap-x-3.5 rounded-xl bg-white px-8 py-2.5 text-center text-sm font-semibold leading-none text-black shadow-md`}
           >
             {toast.type === 'error' ? (
               <ExclamationCircleFill size={'1.75em'} className={`my-auto text-red-500`} />

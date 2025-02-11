@@ -40,7 +40,7 @@ export default function Home() {
             onClick={() => setLogoutMenuVisible((prev) => !prev)}
           />
           <div
-            className={`absolute -translate-x-12 translate-y-5 border border-gray-400 bg-white px-4 py-2 drop-shadow-md ${logoutMenuVisible ? '' : 'hidden'}`}
+            className={`absolute z-[9999] -translate-x-12 translate-y-5 border border-gray-400 bg-white px-4 py-2 drop-shadow-md ${logoutMenuVisible ? '' : 'hidden'}`}
           >
             <Button
               onClick={handleLogout}
