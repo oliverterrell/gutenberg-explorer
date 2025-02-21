@@ -8,17 +8,20 @@ export async function GET(req: NextRequest) {
 
     const mostRecent = await prisma.book.findMany({ orderBy: { updatedAt: 'desc' }, take: 10 });
     const mostPopular = await prisma.book.findMany({ orderBy: { timesRequested: 'desc' }, take: 10 });
+    let userBooks = [];
 
-    let userBooks = await prisma.userBook.findMany({
-      where: { userId: user.id },
-      orderBy: { count: 'desc' },
-      take: 30,
-      select: {
-        book: true,
-      },
-    });
+    if (user.email) {
+      userBooks = await prisma.userBook.findMany({
+        where: { userId: user.id },
+        orderBy: { count: 'desc' },
+        take: 30,
+        select: {
+          book: true,
+        },
+      });
 
-    userBooks = userBooks.map((userBook) => userBook.book) as any;
+      userBooks = userBooks.map((userBook) => userBook.book) as any;
+    }
 
     return Response.json({ mostRecent, mostPopular, userBooks }, { status: 200 });
   } catch (error) {

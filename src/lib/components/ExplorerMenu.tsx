@@ -96,16 +96,22 @@ export const ExplorerMenu = () => {
     setToast(null);
     setModel(llmChoice);
     setModelUpdateProcessing(true);
-    apiClient
-      .patch('/current-user', { preference: { llmChoice } })
-      .then((res) => {
-        setUser(res.data.user);
-        setModel(res.data.user.preference?.llmChoice ?? 'gemini-1.5-flash');
-      })
-      .finally(() => {
-        setToast({ type: 'success', message: 'Updated User Preference' });
-        setModelUpdateProcessing(false);
-      });
+    if (!user.email) {
+      setModel(llmChoice);
+      setToast({ type: 'info', message: 'Sign In to Update User Preference' });
+      setModelUpdateProcessing(false);
+    } else {
+      apiClient
+        .patch('/current-user', { preference: { llmChoice } })
+        .then((res) => {
+          setUser(res.data.user);
+          setModel(res.data.user.preference?.llmChoice ?? 'gemini-1.5-flash');
+        })
+        .finally(() => {
+          setToast({ type: 'success', message: 'Updated User Preference' });
+          setModelUpdateProcessing(false);
+        });
+    }
   };
 
   const handleGetBook = () => {

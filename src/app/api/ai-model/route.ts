@@ -5,7 +5,7 @@ export async function GET() {
     const aiModels = await prisma.aiModel.findMany();
     return Response.json({ aiModels }, { status: 200 });
   } catch (error) {
-    console.log('Error fetching AI Model list');
+    console.log(error);
     return Response.json({ error: error }, { status: 500 });
   }
 }

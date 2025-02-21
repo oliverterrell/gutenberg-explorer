@@ -13,13 +13,33 @@ export const RequestHelper = {
 
     const token = authHeader.split(' ')[1];
 
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    try {
+      const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
-    const {
-      payload: { userId },
-    } = await jwtVerify(token, secret);
+      const {
+        payload: { userId },
+      } = await jwtVerify(token, secret);
 
-    return await prisma.user.findUnique({ where: { id: userId as string } });
+      return await prisma.user.findUnique({ where: { id: userId as string } });
+    } catch (_) {
+      const guestSecret = new TextEncoder().encode(process.env.GUEST_JWT_SECRET);
+
+      const {
+        payload: { guestId },
+      } = await jwtVerify(token, guestSecret);
+
+      if (guestId) {
+        return {
+          id: 'guest',
+          firstName: 'Guest',
+          lastName: 'Visitor',
+          email: null,
+          preference: {
+            llmChoice: 'gemini-1.5-flash',
+          },
+        };
+      }
+    }
   },
 
   getAiModelService: async (req: NextRequest) => {

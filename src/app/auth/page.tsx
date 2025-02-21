@@ -99,7 +99,6 @@ export default function Page() {
         const guestToken = authCookie ? authCookie.split('=')[1] : null;
 
         if (guestToken) {
-          console.log(guestToken);
           AuthService.setSessionToken(guestToken);
           setToast({ message: 'Welcome, Guest!', type: 'success' }, LS_APP_PAGE_TOAST);
           window.location.replace('/');
@@ -207,12 +206,12 @@ export default function Page() {
                 text={isRegistration ? 'Sign Up' : 'Log In'}
                 className={`w-[210px] leading-snug will-change-transform ${isRegistration ? `mt-12` : `mt-20`}`}
               />
-              <Button
-                onClick={handleGuestAccess}
-                type={ButtonType.SECONDARY}
-                text={'Continue as Guest'}
-                className={`w-[210px] leading-snug will-change-transform`}
-              />
+              {/*<Button*/}
+              {/*  onClick={handleGuestAccess}*/}
+              {/*  type={ButtonType.SECONDARY}*/}
+              {/*  text={'Continue as Guest'}*/}
+              {/*  className={`w-[210px] leading-snug will-change-transform`}*/}
+              {/*/>*/}
             </div>
           </motion.div>
         </div>

@@ -4,8 +4,7 @@ import { jwtVerify } from 'jose';
 export const middleware: NextMiddleware = async (req: NextRequest) => {
   const token = req.cookies.get('otAuthToken');
   const guestToken = req.cookies.get('otGuestToken');
-  console.log('token', token);
-  console.log('guestToken', guestToken);
+
   if (!token && !guestToken) {
     return NextResponse.redirect(new URL('/auth', req.url));
   }

@@ -20,6 +20,10 @@ export async function PATCH(req: NextRequest) {
   try {
     const user = await RequestHelper.getCurrentUser(req);
 
+    if (!user.email) {
+      return Response.json({ user }, { status: 201 });
+    }
+
     const { preference } = await req.json();
 
     const updatedUser = await prisma.user.update({ where: { id: user.id }, data: { preference } });
