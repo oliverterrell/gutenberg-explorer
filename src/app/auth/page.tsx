@@ -39,6 +39,7 @@ export default function Page() {
         const cookies = document.cookie.split(';');
         const authCookie = cookies.find((cookie) => cookie.trim().startsWith('otAuthToken='));
         const token = authCookie ? authCookie.split('=')[1] : null;
+
         if (token) {
           AuthService.setSessionToken(token);
           setUser(res.data.user);
@@ -88,6 +89,27 @@ export default function Page() {
 
   const { form, setForm, errors, setErrors, setIsInValidationMode, isInValidationMode, handleSubmit } =
     useAuthForm(onSubmit, isRegistration);
+
+  const handleGuestAccess = async () => {
+    await apiClient
+      .post('/guest')
+      .then(() => {
+        const cookies = document.cookie.split(';');
+        const authCookie = cookies.find((cookie) => cookie.trim().startsWith('otGuestToken='));
+        const guestToken = authCookie ? authCookie.split('=')[1] : null;
+
+        if (guestToken) {
+          console.log(guestToken);
+          AuthService.setSessionToken(guestToken);
+          setToast({ message: 'Welcome, Guest!', type: 'success' }, LS_APP_PAGE_TOAST);
+          window.location.replace('/');
+        }
+      })
+      .catch((error) => {
+        setToast({ message: `Unable to enter as guest. Please sign in.`, type: 'info' });
+        console.error('Error accessing as guest:', error);
+      });
+  };
 
   usePressEnterFor(onSubmit, form);
 
@@ -177,13 +199,19 @@ export default function Page() {
               </LayoutGroup>
             </motion.div>
 
-            <div className={`flex flex-col items-center justify-center`}>
+            <div className={`flex flex-col items-center justify-center gap-y-3`}>
               <Button
                 onClick={handleSubmit}
                 type={ButtonType.PRIMARY}
                 loading={{ state: isLoading, content: isRegistration ? 'Registering...' : 'Signing In...' }}
                 text={isRegistration ? 'Sign Up' : 'Log In'}
-                className={`w-[210px] will-change-transform ${isRegistration ? `mt-12` : `mt-20`}`}
+                className={`w-[210px] leading-snug will-change-transform ${isRegistration ? `mt-12` : `mt-20`}`}
+              />
+              <Button
+                onClick={handleGuestAccess}
+                type={ButtonType.SECONDARY}
+                text={'Continue as Guest'}
+                className={`w-[210px] leading-snug will-change-transform`}
               />
             </div>
           </motion.div>

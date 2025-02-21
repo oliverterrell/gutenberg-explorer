@@ -16,8 +16,4 @@ export const AuthService = {
     await deleteSessionCookie();
     window.localStorage.removeItem(LS_JWT_TOKEN);
   },
-
-  isAuthenticated: () => {
-    return !!AuthService.getSessionToken();
-  },
 };

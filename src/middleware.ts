@@ -3,13 +3,20 @@ import { jwtVerify } from 'jose';
 
 export const middleware: NextMiddleware = async (req: NextRequest) => {
   const token = req.cookies.get('otAuthToken');
-
-  if (!token) {
+  const guestToken = req.cookies.get('otGuestToken');
+  console.log('token', token);
+  console.log('guestToken', guestToken);
+  if (!token && !guestToken) {
     return NextResponse.redirect(new URL('/auth', req.url));
   }
 
   try {
-    await jwtVerify(token.value, new TextEncoder().encode(process.env.JWT_SECRET));
+    if (token) {
+      await jwtVerify(token.value, new TextEncoder().encode(process.env.JWT_SECRET));
+    } else if (guestToken) {
+      await jwtVerify(guestToken.value, new TextEncoder().encode(process.env.GUEST_JWT_SECRET));
+    }
+
     return NextResponse.next();
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -20,5 +27,5 @@ export const middleware: NextMiddleware = async (req: NextRequest) => {
 };
 
 export const config = {
-  matcher: ['/((?!auth|_next/static|_next/image|fonts|favicon.ico|api/login|api/register).*)'],
+  matcher: ['/((?!auth|_next/static|_next/image|fonts|favicon.ico|api/login|api/register|api/guest).*)'],
 };
